@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학급 활동 체크리스트</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-radius: 12px;
+            --checked-bg: #e8f5e9;
+            --checked-border: #4CAF50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+        }
+
+        /* 컨트롤 패널 스타일 */
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column; /* 세로 배치로 변경 */
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .input-area {
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 5px;
+        }
+
+        .helper-text {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 70px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-random {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-random:hover { background-color: #2980b9; }
+
+        .btn-manual {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .btn-manual:hover { background-color: #8e44ad; }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn-reset:hover { background-color: #7f8c8d; }
+
+        /* 상태바 스타일 */
+        .status-bar {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .status-bar span {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* 그리드 레이아웃 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        /* 학생 카드 스타일 */
+        .student-card {
+            background-color: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            padding: 20px 5px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .student-number {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            outline: none; /* 포커스 테두리 제거 */
+            border-bottom: 1px dashed transparent;
+        }
+        
+        .student-name:focus {
+            border-bottom: 1px dashed #aaa;
+            background: #f9f9f9;
+        }
+
+        /* 체크된 상태 스타일 */
+        .student-card.checked {
+            background-color: var(--checked-bg);
+            border-color: var(--checked-border);
+            color: #1b5e20;
+        }
+
+        .student-card.checked .student-number {
+            color: #4CAF50;
+        }
+
+        .student-card.checked::after {
+            content: '✔';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        /* 반응형 처리 */
+        @media (max-width: 600px) {
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏫 학급 활동 체크리스트</h1>
+        <p>학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
+    </header>
+
+    <div class="controls">
+        <div class="input-area">
+            <textarea id="nameInput" placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
+            <div class="helper-text">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-manual" onclick="generateFromList()">입력 명단 생성</button>
+            
+            <div style="flex-grow: 1;"></div> <!-- 간격 벌리기용 -->
+            
+            <div class="input-group">
+                <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수">
+                <button class="btn-random" onclick="generateRandom()">랜덤 생성</button>
+            </div>
+            
+            <button class="btn-reset" onclick="resetChecks()">체크 초기화</button>
+        </div>
+        
+        <div class="status-bar">
+            완료: <span id="completedCount">0</span> / <span id="totalCount">0</span>
+        </div>
+    </div>
+
+    <div id="studentGrid" class="grid-container">
+        <!-- 자바스크립트로 카드가 여기에 생성됩니다 -->
+    </div>
+
+    <script>
+        // 랜덤 이름 생성을 위한 데이터
+        const lastNames = ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권", "황", "안", "송", "류", "전", "홍", "고", "문", "양", "손", "배", "조", "백", "허", "유"];
+        const firstNames = ["민준", "서준", "도윤", "예준", "시우", "하준", "지호", "지우", "준우", "서현", "서연", "지우", "지유", "하은", "서윤", "민서", "지안", "윤서", "채원", "다은", "은우", "수아", "나은", "예린", "시윤", "유준", "현우", "건우", "우진", "민재"];
+
+        // 랜덤 정수 생성 함수
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        // 랜덤 이름 조합 함수
+        function generateRandomName() {
+            const last = lastNames[getRandomInt(lastNames.length)];
+            const first = firstNames[getRandomInt(firstNames.length)];
+            return last + first;
+        }
+
+        // 초기 실행: 랜덤 25명 생성
+        window.onload = function() {
+            generateRandom();
+        };
+
+        // 1. 랜덤 명단 생성 함수
+        function generateRandom() {
+            const countInput = document.getElementById('randomCount');
+            let count = parseInt(countInput.value);
+            
+            if (count < 1) count = 1;
+            if (count > 200) {
+                alert("최대 200명까지만 가능합니다.");
+                count = 200;
+                countInput.value = 200;
+            }
+
+            const names = [];
+            for(let i=0; i<count; i++) {
+                names.push(generateRandomName());
+            }
+            
+            // 입력창도 업데이트 (선택사항)
+            document.getElementById('nameInput').value = names.join(', ');
+            
+            createCards(names);
+        }
+
+        // 2. 입력 명단 생성 함수
+        function generateFromList() {
+            const input = document.getElementById('nameInput').value;
+            
+            if (!input.trim()) {
+                alert("이름을 입력해주세요!");
+                return;
+            }
+
+            // 쉼표나 줄바꿈으로 분리 후 공백 제거
+            let names = input.split(/[\n,]+/).map(name => name.trim()).filter(name => name !== "");
+
+            if (names.length === 0) {
+                alert("유효한 이름이 없습니다.");
+                return;
+            }
+
+            createCards(names);
+        }
+
+        // 공통 카드 생성 로직
+        function createCards(nameList) {
+            const grid = document.getElementById('studentGrid');
+            const totalCountSpan = document.getElementById('totalCount');
+            const completedCountSpan = document.getElementById('completedCount');
+
+            // 초기화
+            grid.innerHTML = '';
+            completedCountSpan.textContent = '0';
+            totalCountSpan.textContent = nameList.length;
+
+            nameList.forEach((name, index) => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                
+                // 클릭 이벤트 (체크)
+                card.onclick = function(e) { 
+                    // contenteditable 요소 클릭 시 체크 방지
+                    if (e.target.isContentEditable) return;
+                    toggleCheck(this); 
+                };
+                
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'student-number';
+                numberSpan.textContent = (index + 1) + '번';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'student-name';
+                nameDiv.textContent = name;
+                // 이름 수정 가능하도록 설정
+                nameDiv.contentEditable = true;
+                
+                // 엔터키 입력시 줄바꿈 방지하고 포커스 해제
+                nameDiv.onkeydown = function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                };
+
+                card.appendChild(numberSpan);
+                card.appendChild(nameDiv);
+                grid.appendChild(card);
+            });
+        }
+
+        // 체크 토글 함수
+        function toggleCheck(cardElement) {
+            cardElement.classList.toggle('checked');
+            updateCount();
+        }
+
+        // 체크 상태 초기화 함수
+        function resetChecks() {
+            const cards = document.querySelectorAll('.student-card');
+            cards.forEach(card => {
+                card.classList.remove('checked');
+            });
+            updateCount();
+        }
+
+        // 카운트 업데이트 함수
+        function updateCount() {
+            const checkedCards = document.querySelectorAll('.student-card.checked');
+            const completedCountSpan = document.getElementById('completedCount');
+            completedCountSpan.textContent = checkedCards.length;
+        }
+    </script>
+</body>
+</html>
