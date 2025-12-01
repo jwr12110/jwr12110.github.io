@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심플 타이머</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --hover-color: #2563eb;
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --display-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: var(--display-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #4b5563;
+        }
+
+        #timer-display {
+            font-size: 5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums; /* 숫자가 흔들리지 않도록 고정폭 사용 */
+            margin: 1rem 0;
+            color: var(--primary-color);
+            letter-spacing: -2px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            transition: width 1s linear;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3열 그리드 */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-color);
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #stop-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            width: 100%;
+        }
+        
+        #stop-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* 타이머 종료 시 애니메이션 */
+        .time-up {
+            animation: blink 1s infinite;
+            color: #ef4444 !important;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>타이머</h1>
+        
+        <div id="timer-display">00:00</div>
+        
+        <div class="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <div class="button-grid">
+            <button onclick="setTimer(10)">10초</button>
+            <button onclick="setTimer(30)">30초</button>
+            <button onclick="setTimer(60)">1분</button>
+            <button onclick="setTimer(600)">10분</button>
+            <button onclick="setTimer(1800)">30분</button>
+            <button onclick="setTimer(3600)">1시간</button>
+        </div>
+
+        <div class="control-buttons">
+            <button id="stop-btn" onclick="resetTimer()">초기화 / 중지</button>
+        </div>
+    </div>
+
+    <script>
+        let countdown;
+        let totalTime;
+        let timeLeft;
+        const display = document.getElementById('timer-display');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // 오디오 컨텍스트 변수 (브라우저 정책상 사용자 인터랙션 후 초기화)
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // 비프음 재생 함수 (Web Audio API 사용 - 별도 파일 필요 없음)
+        function playBeep() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine'; // 소리 파형 (sine, square, sawtooth, triangle)
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 880Hz (높은 '라'음)
+            oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5); // 소리가 떨어지는 효과
+
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        // 반복 알림음 재생
+        function playAlarm() {
+            // 3번 울림
+            playBeep();
+            setTimeout(playBeep, 800);
+            setTimeout(playBeep, 1600);
+        }
+
+        function setTimer(seconds) {
+            // 기존 타이머 중지
+            clearInterval(countdown);
+            display.classList.remove('time-up');
+            
+            // Web Audio 초기화 (사용자 클릭 시점에 필요)
+            initAudio();
+
+            totalTime = seconds;
+            timeLeft = seconds;
+            
+            updateDisplay(timeLeft);
+            updateProgressBar();
+
+            const startTime = Date.now();
+            const endTime = startTime + seconds * 1000;
+
+            countdown = setInterval(() => {
+                const now = Date.now();
+                const remaining = Math.ceil((endTime - now) / 1000); // 남은 시간 계산 (밀리초 오차 보정)
+                
+                timeLeft = remaining;
+
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    clearInterval(countdown);
+                    updateDisplay(0);
+                    updateProgressBar();
+                    timerFinished();
+                    return;
+                }
+
+                updateDisplay(timeLeft);
+                updateProgressBar();
+            }, 100); // 반응성을 위해 0.1초마다 체크하지만 표시는 1초 단위
+        }
+
+        function updateDisplay(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+
+            let timeString = '';
+            
+            // 1시간 이상일 경우 시:분:초, 아니면 분:초
+            if (totalTime >= 3600) {
+                timeString = `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            } else {
+                timeString = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+
+            display.textContent = timeString;
+            document.title = `(${timeString}) 타이머`; // 브라우저 탭 제목에도 시간 표시
+        }
+
+        function updateProgressBar() {
+            const percentage = ((totalTime - timeLeft) / totalTime) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function timerFinished() {
+            display.classList.add('time-up');
+            playAlarm();
+            // 브라우저 알림 (권한 허용 시)
+            if (Notification.permission === "granted") {
+                new Notification("타이머 종료!", { body: "설정하신 시간이 다 되었습니다." });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            timeLeft = 0;
+            totalTime = 0;
+            display.textContent = "00:00";
+            document.title = "심플 타이머";
+            progressBar.style.width = "0%";
+            display.classList.remove('time-up');
+        }
+
+        // 페이지 로드 시 알림 권한 요청 (선택 사항)
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
