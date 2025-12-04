@@ -1,20 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학급 활동 체크리스트</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
     <style>
         :root {
             --primary-color: #4CAF50;
-            --bg-color: #fdfbf7;
+            --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --text-color: #333;
             --border-radius: 12px;
@@ -22,33 +15,56 @@
             --checked-border: #4CAF50;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Gamja Flower', cursive;
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-top: 100px;
-            /* Space for nav */
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* Page specific overrides */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+        }
+
+        /* 컨트롤 패널 스타일 */
         .controls {
             background: white;
             padding: 20px;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* 세로 배치로 변경 */
             gap: 15px;
             align-items: center;
             justify-content: center;
             margin-bottom: 30px;
             width: 100%;
             max-width: 800px;
-            border: 2px solid #e5e7eb;
+        }
+
+        .input-area {
+            width: 100%;
         }
 
         textarea {
@@ -57,20 +73,108 @@
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             resize: vertical;
             font-family: inherit;
             margin-bottom: 5px;
         }
 
+        .helper-text {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 70px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-random {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-random:hover { background-color: #2980b9; }
+
+        .btn-manual {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .btn-manual:hover { background-color: #8e44ad; }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn-reset:hover { background-color: #7f8c8d; }
+
+        /* 상태바 스타일 */
+        .status-bar {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .status-bar span {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* 그리드 레이아웃 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        /* 학생 카드 스타일 */
         .student-card {
             background-color: var(--card-bg);
-            border: 2px solid #e5e7eb;
+            border: 2px solid transparent;
             border-radius: var(--border-radius);
             padding: 20px 5px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             user-select: none;
             position: relative;
@@ -78,16 +182,38 @@
         }
 
         .student-card:hover {
-            transform: translateY(-3px) rotate(-1deg);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .student-number {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            outline: none; /* 포커스 테두리 제거 */
+            border-bottom: 1px dashed transparent;
+        }
+        
+        .student-name:focus {
+            border-bottom: 1px dashed #aaa;
+            background: #f9f9f9;
+        }
+
+        /* 체크된 상태 스타일 */
         .student-card.checked {
             background-color: var(--checked-bg);
             border-color: var(--checked-border);
             color: #1b5e20;
-            transform: rotate(1deg);
+        }
+
+        .student-card.checked .student-number {
+            color: #4CAF50;
         }
 
         .student-card.checked::after {
@@ -99,77 +225,46 @@
             font-size: 1rem;
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 1000px;
-            margin-bottom: 50px;
-        }
-
-        button {
-            font-family: 'Gamja Flower', cursive;
-            font-size: 1.2rem;
+        /* 반응형 처리 */
+        @media (max-width: 600px) {
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Navigation Menu -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
-            </a>
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="../index.html" class="nav-link">홈</a></li>
-                <li><a href="timer.html" class="nav-link">타이머</a></li>
-                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
-                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
-                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
-                <li><a href="checklist.html" class="nav-link active">체크리스트</a></li>
-                <li><a href="score.html" class="nav-link">점수판</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <header class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">🏫 학급 활동 체크리스트</h1>
-        <p class="text-xl text-gray-600">학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
+    <header>
+        <h1>🏫 학급 활동 체크리스트</h1>
+        <p>학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
     </header>
 
     <div class="controls">
-        <div class="w-full">
-            <textarea id="nameInput"
-                placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
-            <div class="text-sm text-gray-500 text-left mb-2">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
+        <div class="input-area">
+            <textarea id="nameInput" placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
+            <div class="helper-text">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
         </div>
 
-        <div class="flex flex-wrap gap-2 justify-center w-full items-center">
-            <button class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition shadow"
-                onclick="generateFromList()">입력 명단 생성</button>
-
-            <div class="flex-grow"></div>
-
-            <div class="flex items-center gap-2">
-                <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수"
-                    class="border p-2 rounded-lg w-20 text-center">
-                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition shadow"
-                    onclick="generateRandom()">랜덤 생성</button>
+        <div class="button-group">
+            <button class="btn-manual" onclick="generateFromList()">입력 명단 생성</button>
+            
+            <div style="flex-grow: 1;"></div> <!-- 간격 벌리기용 -->
+            
+            <div class="input-group">
+                <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수">
+                <button class="btn-random" onclick="generateRandom()">랜덤 생성</button>
             </div>
-
-            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition shadow"
-                onclick="resetChecks()">체크 초기화</button>
+            
+            <button class="btn-reset" onclick="resetChecks()">체크 초기화</button>
         </div>
-
-        <div class="text-xl font-bold text-gray-700 mt-2 pt-2 border-t w-full text-center">
-            완료: <span id="completedCount" class="text-green-600 text-2xl">0</span> / <span id="totalCount"
-                class="text-2xl">0</span>
+        
+        <div class="status-bar">
+            완료: <span id="completedCount">0</span> / <span id="totalCount">0</span>
         </div>
     </div>
 
@@ -195,7 +290,7 @@
         }
 
         // 초기 실행: 랜덤 25명 생성
-        window.onload = function () {
+        window.onload = function() {
             generateRandom();
         };
 
@@ -203,7 +298,7 @@
         function generateRandom() {
             const countInput = document.getElementById('randomCount');
             let count = parseInt(countInput.value);
-
+            
             if (count < 1) count = 1;
             if (count > 200) {
                 alert("최대 200명까지만 가능합니다.");
@@ -212,20 +307,20 @@
             }
 
             const names = [];
-            for (let i = 0; i < count; i++) {
+            for(let i=0; i<count; i++) {
                 names.push(generateRandomName());
             }
-
+            
             // 입력창도 업데이트 (선택사항)
             document.getElementById('nameInput').value = names.join(', ');
-
+            
             createCards(names);
         }
 
         // 2. 입력 명단 생성 함수
         function generateFromList() {
             const input = document.getElementById('nameInput').value;
-
+            
             if (!input.trim()) {
                 alert("이름을 입력해주세요!");
                 return;
@@ -256,26 +351,26 @@
             nameList.forEach((name, index) => {
                 const card = document.createElement('div');
                 card.className = 'student-card';
-
+                
                 // 클릭 이벤트 (체크)
-                card.onclick = function (e) {
+                card.onclick = function(e) { 
                     // contenteditable 요소 클릭 시 체크 방지
                     if (e.target.isContentEditable) return;
-                    toggleCheck(this);
+                    toggleCheck(this); 
                 };
-
+                
                 const numberSpan = document.createElement('span');
-                numberSpan.className = 'block text-gray-400 text-sm mb-1';
+                numberSpan.className = 'student-number';
                 numberSpan.textContent = (index + 1) + '번';
-
+                
                 const nameDiv = document.createElement('div');
-                nameDiv.className = 'text-xl font-bold outline-none border-b border-transparent focus:border-gray-400 focus:bg-gray-50';
+                nameDiv.className = 'student-name';
                 nameDiv.textContent = name;
                 // 이름 수정 가능하도록 설정
                 nameDiv.contentEditable = true;
-
+                
                 // 엔터키 입력시 줄바꿈 방지하고 포커스 해제
-                nameDiv.onkeydown = function (e) {
+                nameDiv.onkeydown = function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         this.blur();
@@ -309,12 +404,6 @@
             const completedCountSpan = document.getElementById('completedCount');
             completedCountSpan.textContent = checkedCards.length;
         }
-
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
     </script>
 </body>
-
 </html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 브레인 트레이너</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .game-area {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .stage-title {
+            text-align: center;
+            font-size: 1.5em;
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .description {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pattern-item {
+            aspect-ratio: 1;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .pattern-item:hover {
+            transform: scale(1.05);
+        }
+
+        .pattern-item.selected {
+            border: 5px solid #00b894;
+            transform: scale(0.95);
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .choice-btn.correct {
+            background: #00b894;
+            color: white;
+        }
+
+        .choice-btn.wrong {
+            background: #d63031;
+            color: white;
+        }
+
+        .next-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .feedback {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .feedback.correct {
+            color: #00b894;
+        }
+
+        .feedback.wrong {
+            color: #d63031;
+        }
+
+        .leaderboard {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            animation: celebrate 0.5s ease-out;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes celebrate {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-btn {
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            margin-top: 30px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 AI 브레인 트레이너</h1>
+        <p class="subtitle">딥러닝 원리를 배우며 AI를 훈련시켜보세요!</p>
+
+        <div id="startScreen" class="start-screen">
+            <div class="emoji">🤖✨</div>
+            <h2>AI를 똑똑하게 만드는 방법을 배워볼까요?</h2>
+            <p style="margin: 20px 0; color: #666; line-height: 1.8;">
+                AI는 많은 예제를 보고 배워요!<br>
+                여러분도 AI처럼 패턴을 찾아 학습해보세요!
+            </p>
+            <button class="start-btn" onclick="startGame()">게임 시작! 🚀</button>
+        </div>
+
+        <div id="gameScreen" class="hidden">
+            <div class="game-info">
+                <div class="info-box">
+                    <div class="info-label">점수</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">스테이지</div>
+                    <div class="info-value" id="stage">1</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">연속 정답</div>
+                    <div class="info-value" id="streak">0</div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <div class="stage-title" id="stageTitle">스테이지 1: 색깔 패턴 학습</div>
+                <div class="description" id="description">
+                    AI는 여러 예제를 보고 패턴을 찾아요! 같은 색깔을 찾아보세요.
+                </div>
+                <div id="gameContent"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <div class="leaderboard">
+                <h3>🏆 최고 기록</h3>
+                <div id="leaderboardContent">
+                    <div class="leaderboard-item">
+                        <span><span class="rank">🥇</span> 챔피언</span>
+                        <span style="font-weight: bold;">500점</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">🥈</span> 도전자</span>
+                        <span style="font-weight: bold;">350점</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">🥉</span> 초보자</span>
+                        <span style="font-weight: bold;">200점</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let stage = 1;
+        let streak = 0;
+        let currentQuestion = null;
+
+        const stages = [
+            {
+                title: "스테이지 1: 색깔 패턴 학습",
+                description: "AI는 여러 예제를 보고 패턴을 찾아요! 같은 색깔을 찾아보세요.",
+                type: "color",
+                concept: "데이터 학습"
+            },
+            {
+                title: "스테이지 2: 모양 분류하기",
+                description: "AI는 비슷한 것들을 그룹으로 나눠요! 같은 종류의 이모지를 찾아보세요.",
+                type: "shape",
+                concept: "분류 (Classification)"
+            },
+            {
+                title: "스테이지 3: 패턴 예측하기",
+                description: "AI는 규칙을 찾아 다음을 예측해요! 패턴의 다음 순서를 맞춰보세요.",
+                type: "pattern",
+                concept: "예측 (Prediction)"
+            }
+        ];
+
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#feca57', '#ff9ff3', '#48dbfb', '#1dd1a1', '#ff6348'];
+        const shapeGroups = [
+            ['🐶', '🐱', '🐭', '🐹'],
+            ['🍎', '🍊', '🍋', '🍌'],
+            ['⚽', '🏀', '🎾', '🏐'],
+            ['🚗', '🚕', '🚙', '🚌']
+        ];
+
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            loadStage();
+        }
+
+        function loadStage() {
+            const stageData = stages[(stage - 1) % stages.length];
+            document.getElementById('stageTitle').textContent = stageData.title;
+            document.getElementById('description').textContent = stageData.description;
+            
+            if (stageData.type === 'color') {
+                createColorGame();
+            } else if (stageData.type === 'shape') {
+                createShapeGame();
+            } else if (stageData.type === 'pattern') {
+                createPatternGame();
+            }
+        }
+
+        function createColorGame() {
+            const content = document.getElementById('gameContent');
+            const targetColor = colors[Math.floor(Math.random() * colors.length)];
+            currentQuestion = { answer: targetColor };
+
+            let html = '<div class="pattern-grid">';
+            const items = [targetColor, targetColor, targetColor];
+            
+            while (items.length < 8) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                if (randomColor !== targetColor) {
+                    items.push(randomColor);
+                }
+            }
+            
+            items.sort(() => Math.random() - 0.5);
+
+            items.forEach(color => {
+                html += `<div class="pattern-item" style="background: ${color}"></div>`;
+            });
+            html += '</div>';
+
+            html += '<div class="choices">';
+            const choices = [targetColor];
+            while (choices.length < 4) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                if (!choices.includes(randomColor)) {
+                    choices.push(randomColor);
+                }
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            choices.forEach(color => {
+                html += `<button class="choice-btn" style="background: ${color}" onclick="checkAnswer('${color}', '${targetColor}')">이 색깔!</button>`;
+            });
+            html += '</div>';
+
+            content.innerHTML = html;
+        }
+
+        function createShapeGame() {
+            const content = document.getElementById('gameContent');
+            const groupIndex = Math.floor(Math.random() * shapeGroups.length);
+            const targetGroup = shapeGroups[groupIndex];
+            const targetShape = targetGroup[Math.floor(Math.random() * targetGroup.length)];
+            
+            currentQuestion = { answer: groupIndex, shape: targetShape };
+
+            let html = `<div style="text-align: center; margin-bottom: 20px;">
+                <div style="background: white; display: inline-block; padding: 20px 40px; border-radius: 15px; font-size: 4em;">
+                    ${targetShape}
+                </div>
+                <p style="margin-top: 10px; font-weight: bold;">이것과 같은 종류를 찾으세요!</p>
+            </div>`;
+
+            html += '<div class="choices">';
+            shapeGroups.forEach((group, index) => {
+                const displayShape = group[Math.floor(Math.random() * group.length)];
+                html += `<button class="choice-btn" onclick="checkAnswer(${index}, ${groupIndex})" style="font-size: 3em;">${displayShape}</button>`;
+            });
+            html += '</div>';
+
+            content.innerHTML = html;
+        }
+
+        function createPatternGame() {
+            const content = document.getElementById('gameContent');
+            const patterns = [
+                { seq: ['🌙', '⭐', '🌙', '⭐'], next: '🌙', opts: ['🌙', '⭐', '☀️', '🌈'] },
+                { seq: ['🔴', '🔵', '🔴', '🔵'], next: '🔴', opts: ['🔴', '🔵', '🟢', '🟡'] },
+                { seq: ['1️⃣', '2️⃣', '3️⃣', '4️⃣'], next: '5️⃣', opts: ['5️⃣', '1️⃣', '6️⃣', '3️⃣'] },
+                { seq: ['⬆️', '➡️', '⬇️', '⬅️'], next: '⬆️', opts: ['⬆️', '➡️', '⬇️', '⬅️'] }
+            ];
+
+            const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+            currentQuestion = { answer: pattern.next };
+
+            let html = '<div class="pattern-grid" style="grid-template-columns: repeat(4, 1fr);">';
+            pattern.seq.forEach(item => {
+                html += `<div class="pattern-item" style="background: white; font-size: 3em;">${item}</div>`;
+            });
+            html += '<div class="pattern-item" style="background: #ffeaa7; font-size: 3em;">❓</div>';
+            html += '</div>';
+
+            html += '<div class="choices">';
+            pattern.opts.forEach(opt => {
+                html += `<button class="choice-btn" onclick="checkAnswer('${opt}', '${pattern.next}')" style="font-size: 2em;">${opt}</button>`;
+            });
+            html += '</div>';
+
+            content.innerHTML = html;
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('feedback');
+            const choices = document.querySelectorAll('.choice-btn');
+            
+            choices.forEach(btn => btn.disabled = true);
+
+            if (String(selected) === String(correct)) {
+                feedback.textContent = '정답입니다! 🎉';
+                feedback.className = 'feedback correct';
+                
+                const points = 50 + (streak * 10);
+                score += points;
+                streak++;
+                
+                showCelebration('🎉');
+                
+                setTimeout(() => {
+                    stage++;
+                    document.getElementById('score').textContent = score;
+                    document.getElementById('stage').textContent = stage;
+                    document.getElementById('streak').textContent = streak;
+                    feedback.textContent = '';
+                    loadStage();
+                }, 1500);
+            } else {
+                feedback.textContent = '아쉬워요! 다시 도전해보세요 💪';
+                feedback.className = 'feedback wrong';
+                streak = 0;
+                document.getElementById('streak').textContent = streak;
+                
+                setTimeout(() => {
+                    feedback.textContent = '';
+                    choices.forEach(btn => btn.disabled = false);
+                }, 1500);
+            }
+        }
+
+        function showCelebration(emoji) {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.textContent = emoji;
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                celebration.remove();
+            }, 500);
+        }
+
+        document.getElementById('score').textContent = score;
+        document.getElementById('stage').textContent = stage;
+        document.getElementById('streak').textContent = streak;
+    </script>
+</body>
+</html>

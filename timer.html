@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>심플 누적 타이머</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -21,32 +14,29 @@
         }
 
         body {
-            font-family: 'Gamja Flower', cursive;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding-top: 100px;
-            /* Space for nav */
         }
 
         .container {
             background-color: var(--display-bg);
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
             width: 90%;
             max-width: 500px;
-            margin-top: 2rem;
         }
 
         h1 {
             margin-top: 0;
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             color: #4b5563;
         }
 
@@ -57,15 +47,13 @@
             margin: 1rem 0;
             color: var(--primary-color);
             letter-spacing: -2px;
-            font-family: 'Noto Sans KR', sans-serif;
-            /* Keep numbers readable */
         }
 
         .progress-bar-container {
             width: 100%;
-            height: 12px;
+            height: 8px;
             background-color: #e5e7eb;
-            border-radius: 6px;
+            border-radius: 4px;
             overflow: hidden;
             margin-bottom: 2rem;
         }
@@ -74,14 +62,13 @@
             height: 100%;
             width: 0%;
             background-color: var(--primary-color);
-            transition: width 0.2s linear;
-            /* 반응성을 위해 transition 시간 단축 */
+            transition: width 0.2s linear; /* 반응성을 위해 transition 시간 단축 */
         }
 
         .button-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
@@ -90,14 +77,12 @@
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             padding: 15px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             color: var(--text-color);
-            user-select: none;
-            /* 버튼 텍스트 선택 방지 */
-            font-family: 'Gamja Flower', cursive;
+            user-select: none; /* 버튼 텍스트 선택 방지 */
         }
 
         button:hover {
@@ -131,9 +116,8 @@
             color: white;
             border: none;
             width: 100%;
-            font-size: 1.5rem;
         }
-
+        
         #stop-btn:hover {
             background-color: #dc2626;
         }
@@ -144,47 +128,19 @@
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
+
     </style>
 </head>
-
 <body>
 
-    <!-- Navigation Menu -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
-            </a>
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="../index.html" class="nav-link">홈</a></li>
-                <li><a href="timer.html" class="nav-link active">타이머</a></li>
-                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
-                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
-                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
-                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
-                <li><a href="score.html" class="nav-link">점수판</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="container">
-        <h1><i class="fas fa-clock text-blue-500 mr-2"></i>누적 타이머</h1>
-
+        <h1>누적 타이머</h1>
+        
         <div id="timer-display">00:00</div>
-
+        
         <div class="progress-bar-container">
             <div id="progress-bar"></div>
         </div>
@@ -208,10 +164,10 @@
         let endTime = 0;        // 목표 종료 시간 (Timestamp)
         let totalTime = 0;      // 전체 설정 시간 (진행 바 계산용)
         let timeLeft = 0;       // 남은 시간 (초)
-
+        
         const display = document.getElementById('timer-display');
         const progressBar = document.getElementById('progress-bar');
-
+        
         let audioCtx;
 
         function initAudio() {
@@ -264,7 +220,7 @@
                 timeLeft += seconds;
                 totalTime += seconds; // 진행 바 비율 유지를 위해 전체 시간도 증가
                 endTime += (seconds * 1000); // 목표 시간 뒤로 미루기
-
+                
                 updateDisplay(timeLeft);
                 updateProgressBar();
             }
@@ -273,7 +229,7 @@
         function startTimer() {
             // 현재 시간 + 남은 시간으로 목표 시간 설정
             endTime = Date.now() + (timeLeft * 1000);
-
+            
             updateDisplay(timeLeft);
             updateProgressBar();
 
@@ -284,7 +240,7 @@
                 const now = Date.now();
                 // 남은 시간 계산 (목표시간 - 현재시간)
                 const remaining = Math.ceil((endTime - now) / 1000);
-
+                
                 timeLeft = remaining;
 
                 if (timeLeft <= 0) {
@@ -308,7 +264,7 @@
             const s = seconds % 60;
 
             let timeString = '';
-
+            
             if (totalTime >= 3600 || seconds >= 3600) {
                 timeString = `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
             } else {
@@ -350,15 +306,9 @@
             display.classList.remove('time-up');
         }
 
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
-
         if ("Notification" in window) {
             Notification.requestPermission();
         }
     </script>
 </body>
-
 </html>

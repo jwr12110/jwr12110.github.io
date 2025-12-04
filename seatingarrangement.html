@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학급 자리 배치 프로그램</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Noto Sans KR) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
-
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-
         body {
-            font-family: 'Gamja Flower', cursive;
+            font-family: 'Noto Sans KR', sans-serif;
             background-color: #f3f4f6;
-            padding-top: 100px;
-            /* Space for nav */
         }
-
+        
         /* 드래그 앤 드롭 관련 스타일 */
         .grid-cell {
             aspect-ratio: 4/3;
             transition: all 0.2s;
         }
-
+        
         .grid-cell.drag-over {
-            background-color: #dbeafe;
-            /* bg-blue-100 */
+            background-color: #dbeafe; /* bg-blue-100 */
             border: 2px dashed #3b82f6;
         }
 
@@ -38,8 +32,6 @@
             cursor: move;
             transition: transform 0.2s, box-shadow 0.2s;
             user-select: none;
-            font-family: 'Noto Sans KR', sans-serif;
-            /* Keep names readable */
         }
 
         .desk:active {
@@ -58,85 +50,47 @@
             width: 8px;
             height: 8px;
         }
-
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f1f1f1; 
         }
-
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #cbd5e1; 
             border-radius: 4px;
         }
-
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        h1,
-        h2,
-        h3,
-        button,
-        input {
-            font-family: 'Gamja Flower', cursive;
-        }
-
-        .student-name-input {
-            font-family: 'Noto Sans KR', sans-serif;
+            background: #94a3b8; 
         }
     </style>
 </head>
-
 <body class="text-slate-800">
-
-    <!-- Navigation Menu -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
-            </a>
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="../index.html" class="nav-link">홈</a></li>
-                <li><a href="timer.html" class="nav-link">타이머</a></li>
-                <li><a href="seatingarrangement.html" class="nav-link active">자리배치</a></li>
-                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
-                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
-                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
-                <li><a href="score.html" class="nav-link">점수판</a></li>
-            </ul>
-        </div>
-    </nav>
 
     <div class="container mx-auto px-4 py-8 max-w-6xl">
         <header class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-slate-800 mb-2">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">
                 <i class="fas fa-chalkboard-teacher text-blue-600 mr-2"></i>학급 자리 배치도
             </h1>
-            <p class="text-slate-500 text-xl">학생 수를 입력하고 책상을 배치한 뒤 자리를 배정해보세요.</p>
+            <p class="text-slate-500">학생 수를 입력하고 책상을 배치한 뒤 자리를 배정해보세요.</p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
+            
             <!-- 왼쪽 패널: 설정 및 학생 목록 -->
             <div class="lg:col-span-4 space-y-6">
                 <!-- 1. 설정 카드 -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                    <h2 class="text-2xl font-bold mb-4 flex items-center">
-                        <span
-                            class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-lg mr-2">1</span>
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">1</span>
                         학생 설정
                     </h2>
-
+                    
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-lg font-medium text-slate-700 mb-1">학생 수</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">학생 수</label>
                             <div class="flex gap-2">
-                                <input type="number" id="studentCountInput" min="1" max="50" value="20"
-                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg">
-                                <button onclick="generateStudentInputs()"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-lg">
+                                <input type="number" id="studentCountInput" min="1" max="50" value="20" 
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button onclick="generateStudentInputs()" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
                                     설정
                                 </button>
                             </div>
@@ -147,24 +101,22 @@
                 <!-- 2. 학생 명단 카드 -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col h-[500px]">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold flex items-center">
-                            <span
-                                class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-lg mr-2">2</span>
+                        <h2 class="text-lg font-bold flex items-center">
+                            <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">2</span>
                             학생 명단
                         </h2>
-                        <span class="text-lg text-slate-400" id="studentCountDisplay">0명</span>
+                        <span class="text-xs text-slate-400" id="studentCountDisplay">0명</span>
                     </div>
-
+                    
                     <div id="studentListContainer" class="flex-1 overflow-y-auto space-y-2 pr-2">
                         <!-- 학생 입력 필드가 여기에 생성됩니다 -->
-                        <div class="text-center text-slate-400 py-10 text-lg">
+                        <div class="text-center text-slate-400 py-10">
                             먼저 학생 수를 설정해주세요.
                         </div>
                     </div>
-
+                    
                     <div class="mt-4 pt-4 border-t border-slate-100">
-                        <button onclick="regenerateRandomNames()"
-                            class="w-full py-2 text-lg text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <button onclick="regenerateRandomNames()" class="w-full py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                             <i class="fas fa-sync-alt mr-1"></i> 이름 전체 랜덤 재생성
                         </button>
                     </div>
@@ -176,34 +128,30 @@
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 min-h-[600px] flex flex-col">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
-                            <h2 class="text-2xl font-bold flex items-center">
-                                <span
-                                    class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-lg mr-2">3</span>
+                            <h2 class="text-lg font-bold flex items-center">
+                                <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">3</span>
                                 교실 배치
                             </h2>
-                            <p class="text-sm text-slate-500 mt-1 ml-10">책상을 드래그하여 위치를 옮기거나, 빈 공간을 클릭해 책상을 추가/제거하세요.</p>
+                            <p class="text-xs text-slate-500 mt-1 ml-8">책상을 드래그하여 위치를 옮기거나, 빈 공간을 클릭해 책상을 추가/제거하세요.</p>
                         </div>
-
+                        
                         <div class="flex gap-2">
-                            <button onclick="resetLayout()"
-                                class="px-3 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg transition-colors">
+                            <button onclick="resetLayout()" class="px-3 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm transition-colors">
                                 <i class="fas fa-undo mr-1"></i> 배치 초기화
                             </button>
-                            <button onclick="assignSeats()"
-                                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition-colors font-medium text-lg">
+                            <button onclick="assignSeats()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition-colors font-medium">
                                 <i class="fas fa-check mr-1"></i> 자리 배정하기
                             </button>
                         </div>
                     </div>
 
                     <!-- 칠판 영역 -->
-                    <div class="w-full bg-slate-700 h-10 rounded-lg mb-8 flex items-center justify-center shadow-inner">
-                        <span class="text-slate-300 text-sm tracking-widest font-sans">CHALKBOARD (FRONT)</span>
+                    <div class="w-full bg-slate-700 h-8 rounded-lg mb-8 flex items-center justify-center shadow-inner">
+                        <span class="text-slate-300 text-xs tracking-widest">CHALKBOARD (FRONT)</span>
                     </div>
 
                     <!-- 좌석 그리드 -->
-                    <div id="classroomGrid"
-                        class="grid grid-cols-6 gap-3 flex-1 bg-slate-50 p-4 rounded-xl border-2 border-dashed border-slate-200 relative">
+                    <div id="classroomGrid" class="grid grid-cols-6 gap-3 flex-1 bg-slate-50 p-4 rounded-xl border-2 border-dashed border-slate-200 relative">
                         <!-- 그리드 셀과 책상이 여기에 생성됩니다 -->
                     </div>
                 </div>
@@ -218,10 +166,9 @@
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
                     <i class="fas fa-info text-blue-600 text-xl"></i>
                 </div>
-                <h3 class="text-2xl font-medium text-gray-900 mb-2" id="alertTitle">알림</h3>
-                <p class="text-lg text-gray-500 mb-6" id="alertMessage">메시지 내용</p>
-                <button onclick="closeModal()"
-                    class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none">
+                <h3 class="text-lg font-medium text-gray-900 mb-2" id="alertTitle">알림</h3>
+                <p class="text-sm text-gray-500 mb-6" id="alertMessage">메시지 내용</p>
+                <button onclick="closeModal()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm">
                     확인
                 </button>
             </div>
@@ -232,12 +179,12 @@
         // --- 데이터 ---
         const firstNames = ['민준', '서준', '도윤', '예준', '시우', '하준', '지호', '주원', '지후', '준우', '서연', '서윤', '지우', '서현', '하은', '하윤', '민서', '지유', '윤서', '채원', '수호', '은우', '선우', '정우', '건우', '우진', '현준', '민재', '유준', '지아', '서아', '다은', '소율', '예린', '수아', '아린', '소윤', '시아', '하린'];
         const lastNames = ['김', '이', '박', '최', '정', '강', '조', '윤', '장', '임', '한', '오', '서', '신', '권', '황', '안', '송', '전', '홍'];
-
+        
         // 상태 관리
         let students = []; // { id, name }
         let gridCols = 6;
         let gridRows = 5; // 여유 있게 5행
-
+        
         // 초기화
         document.addEventListener('DOMContentLoaded', () => {
             initGrid();
@@ -267,7 +214,7 @@
         function generateStudentInputs() {
             const countInput = document.getElementById('studentCountInput');
             let count = parseInt(countInput.value);
-
+            
             if (count < 1) count = 1;
             if (count > 50) {
                 showAlert("입력 오류", "학생 수는 최대 50명까지만 가능합니다.");
@@ -282,20 +229,20 @@
             for (let i = 0; i < count; i++) {
                 const name = getRandomName();
                 students.push({ id: i, name: name });
-
+                
                 const div = document.createElement('div');
                 div.className = "flex items-center gap-2 animate-fade-in";
                 div.innerHTML = `
                     <span class="text-slate-400 text-sm w-6 text-center">${i + 1}</span>
                     <input type="text" value="${name}" data-index="${i}" 
-                        class="student-name-input flex-1 px-3 py-2 text-lg border border-slate-200 rounded focus:outline-none focus:border-blue-500 transition-colors"
+                        class="student-name-input flex-1 px-3 py-2 text-sm border border-slate-200 rounded focus:outline-none focus:border-blue-500 transition-colors"
                         onchange="updateStudentName(${i}, this.value)">
                 `;
                 container.appendChild(div);
             }
-
+            
             document.getElementById('studentCountDisplay').innerText = `${count}명`;
-
+            
             // 학생 수가 책상 수보다 많으면 경고
             const activeDesks = document.querySelectorAll('.desk').length;
             if (count > activeDesks) {
@@ -322,13 +269,13 @@
         function initGrid() {
             const grid = document.getElementById('classroomGrid');
             grid.innerHTML = '';
-
+            
             // 6열 5행 그리드 생성 (총 30칸)
             for (let i = 0; i < gridCols * gridRows; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell bg-slate-200 rounded-lg flex items-center justify-center relative border border-slate-300';
                 cell.dataset.index = i;
-
+                
                 // 드래그 이벤트 리스너 (셀)
                 cell.addEventListener('dragover', handleDragOver);
                 cell.addEventListener('drop', handleDrop);
@@ -351,10 +298,10 @@
                 <div class="text-slate-300 mb-1 desk-icon"><i class="fas fa-chair"></i></div>
                 <div class="text-sm font-bold text-slate-700 desk-name truncate w-full text-center px-1">-</div>
             `;
-
+            
             // 드래그 이벤트 리스너 (책상)
             desk.addEventListener('dragstart', handleDragStart);
-
+            
             return desk;
         }
 
@@ -379,18 +326,18 @@
             // 드래그 중이 아닐 때만 작동하도록 주의
             // e.target이 desk 내부 요소라면 무시 (드래그 시작일 수 있음)
             // 하지만 여기서는 간단히: 빈 셀을 클릭하면 책상 추가, 책상이 있는 셀을 ctrl+클릭하면 제거 등으로 UX 개선
-
+            
             // 심플한 UX: 책상이 없으면 추가, (제거는 좀 더 신중하게? 아니면 토글?)
             // 드래그와 클릭이 겹칠 수 있으므로, 여기서는 "빈 셀 클릭 시 추가"만 구현하고
             // 책상 제거는 "책상을 더블 클릭"으로 구현
-
+            
             if (e.target.classList.contains('grid-cell') && !e.target.querySelector('.desk')) {
                 addDeskToCell(e.target);
             }
         }
-
+        
         // 책상 더블 클릭 시 삭제 이벤트 위임
-        document.getElementById('classroomGrid').addEventListener('dblclick', function (e) {
+        document.getElementById('classroomGrid').addEventListener('dblclick', function(e) {
             const desk = e.target.closest('.desk');
             if (desk) {
                 const cell = desk.parentElement;
@@ -399,7 +346,7 @@
         });
 
         function resetLayout() {
-            if (confirm('배치를 6열 4행 기본값으로 초기화하시겠습니까?')) {
+            if(confirm('배치를 6열 4행 기본값으로 초기화하시겠습니까?')) {
                 const cells = document.querySelectorAll('.grid-cell');
                 cells.forEach((cell, index) => {
                     removeDeskFromCell(cell);
@@ -440,14 +387,14 @@
 
         // 드래그가 셀을 벗어났을 때 스타일 제거
         document.getElementById('classroomGrid').addEventListener('dragleave', (e) => {
-            const cell = e.target.closest('.grid-cell');
-            if (cell) cell.classList.remove('drag-over');
+             const cell = e.target.closest('.grid-cell');
+             if (cell) cell.classList.remove('drag-over');
         });
 
         function handleDrop(e) {
             e.preventDefault();
             const targetCell = e.target.closest('.grid-cell');
-
+            
             // 드래그 종료 후 스타일 복구
             draggedDesk.classList.remove('opacity-50');
             document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('drag-over'));
@@ -505,14 +452,14 @@
             desks.forEach((desk, index) => {
                 desk.classList.remove('assigned');
                 desk.querySelector('.desk-name').innerText = '...';
-
+                
                 setTimeout(() => {
                     if (index < shuffledStudents.length) {
                         const student = shuffledStudents[index];
                         desk.querySelector('.desk-name').innerText = student.name;
                         desk.querySelector('.desk-icon').style.display = 'none';
                         desk.classList.add('assigned');
-
+                        
                         // 살짝 튀어오르는 애니메이션
                         desk.style.transform = 'scale(1.1)';
                         setTimeout(() => desk.style.transform = 'scale(1)', 200);
@@ -527,12 +474,6 @@
                 }, index * 50); // 순차적 효과
             });
         }
-
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
     </script>
 </body>
-
 </html>

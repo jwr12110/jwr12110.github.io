@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,39 +8,102 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Google Fonts (Gamja Flower - 귀여운 손글씨) -->
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Gamja Flower', cursive;
+            background-color: #fdfbf7;
+            background-image: 
+                linear-gradient(#e5e7eb 1px, transparent 1px),
+                linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #4b5563;
+        }
+
+        /* Hand-drawn Border Effect */
+        .doodle-box {
+            border: 3px solid #4b5563;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .doodle-box:hover {
+            transform: scale(1.02) rotate(-1deg);
+            box-shadow: 4px 8px 15px rgba(0,0,0,0.1);
+            border-color: #000;
+        }
+
+        /* Tape Effect */
+        .tape {
+            background-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            transform: rotate(-3deg);
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            margin-left: -30px;
+            width: 60px;
+            height: 20px;
+            border-left: 1px dashed rgba(0,0,0,0.1);
+            border-right: 1px dashed rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .tape-color-1 { background-color: rgba(254, 202, 202, 0.7); } /* Red */
+        .tape-color-2 { background-color: rgba(187, 247, 208, 0.7); } /* Green */
+        .tape-color-3 { background-color: rgba(191, 219, 254, 0.7); } /* Blue */
+        .tape-color-4 { background-color: rgba(253, 230, 138, 0.7); } /* Yellow */
+        .tape-color-5 { background-color: rgba(233, 213, 255, 0.7); } /* Purple */
+        .tape-color-6 { background-color: rgba(254, 215, 170, 0.7); } /* Orange */
+
+        /* Scribble Animation on Icon Hover */
+        @keyframes scribble {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.1); }
+            50% { transform: rotate(-5deg) scale(1.1); }
+            75% { transform: rotate(5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .group:hover .doodle-icon {
+            animation: scribble 0.5s ease-in-out infinite;
+            color: inherit;
+        }
+
+        /* Underline Pen Effect */
+        .pen-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .pen-underline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            bottom: 5px;
+            left: 0;
+            background-color: #fcd34d;
+            opacity: 0.4;
+            z-index: -1;
+            border-radius: 4px;
+            transform: rotate(-1deg);
+        }
+
+    </style>
 </head>
-
-<body class="flex flex-col items-center justify-center p-6">
-
-    <!-- Navigation Menu -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
-            </a>
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="nav-link active">홈</a></li>
-                <li><a href="pages/timer.html" class="nav-link">타이머</a></li>
-                <li><a href="pages/seatingarrangement.html" class="nav-link">자리배치</a></li>
-                <li><a href="pages/roulette.html" class="nav-link">돌림판</a></li>
-                <li><a href="pages/dB.html" class="nav-link">소음측정기</a></li>
-                <li><a href="pages/checklist.html" class="nav-link">체크리스트</a></li>
-                <li><a href="pages/score.html" class="nav-link">점수판</a></li>
-            </ul>
-        </div>
-    </nav>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
     <!-- Header Section -->
-    <header class="text-center mb-16 relative mt-10">
+    <header class="text-center mb-16 relative">
         <!-- Decoration: Circle -->
-        <div class="absolute -top-10 -left-10 w-24 h-24 border-4 border-red-300 rounded-full opacity-50 animate-bounce"
-            style="animation-duration: 3s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"></div>
-
+        <div class="absolute -top-10 -left-10 w-24 h-24 border-4 border-red-300 rounded-full opacity-50 animate-bounce" style="animation-duration: 3s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"></div>
+        
         <h1 class="text-6xl md:text-7xl font-bold text-gray-800 mb-2 relative z-10">
             <span class="pen-underline">우리 수업 도구</span>
         </h1>
@@ -55,7 +117,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-4">
 
             <!-- Card 1: 타이머 -->
-            <a href="pages/timer.html" class="group relative block">
+            <a href="timer.html" class="group relative block">
                 <div class="tape tape-color-1"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-red-500">
                     <i class="fa-solid fa-stopwatch text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -64,7 +126,7 @@
             </a>
 
             <!-- Card 2: 자리배치 -->
-            <a href="pages/seatingarrangement.html" class="group relative block">
+            <a href="seatingarrangement.html" class="group relative block">
                 <div class="tape tape-color-2"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-green-500">
                     <i class="fa-solid fa-chair text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -73,7 +135,7 @@
             </a>
 
             <!-- Card 3: 돌림판 -->
-            <a href="pages/roulette.html" class="group relative block">
+            <a href="roulette.html" class="group relative block">
                 <div class="tape tape-color-3"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-blue-500">
                     <i class="fa-solid fa-dharmachakra text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -82,7 +144,7 @@
             </a>
 
             <!-- Card 4: 소음측정기 -->
-            <a href="pages/dB.html" class="group relative block">
+            <a href="dB.html" class="group relative block">
                 <div class="tape tape-color-4"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-yellow-500">
                     <i class="fa-solid fa-volume-high text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -91,7 +153,7 @@
             </a>
 
             <!-- Card 5: 체크리스트 -->
-            <a href="pages/checklist.html" class="group relative block">
+            <a href="checklist.html" class="group relative block">
                 <div class="tape tape-color-5"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-purple-500">
                     <i class="fa-solid fa-list-check text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -100,7 +162,7 @@
             </a>
 
             <!-- Card 6: 점수판 -->
-            <a href="pages/score.html" class="group relative block">
+            <a href="score.html" class="group relative block">
                 <div class="tape tape-color-6"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-orange-500">
                     <i class="fa-solid fa-trophy text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
@@ -108,13 +170,11 @@
                 </div>
             </a>
 
-
-
         </div>
     </main>
 
     <!-- Footer -->
-    <footer>
+    <footer class="mt-16 text-center text-gray-400 text-lg">
         <p class="mb-2">
             <i class="fa-solid fa-heart text-red-300 animate-pulse"></i>
             선생님과 학생이 함께 만드는 교실
@@ -122,13 +182,5 @@
         <div class="w-full max-w-xs mx-auto h-0.5 bg-gray-300 rounded-full"></div>
     </footer>
 
-    <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
-    </script>
-
 </body>
-
 </html>
