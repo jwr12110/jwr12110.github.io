@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 수업 도구 - My Class Sketchbook</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="flex flex-col items-center justify-center p-6">
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link active">홈</a></li>
+                <li><a href="pages/timer.html" class="nav-link">타이머</a></li>
+                <li><a href="pages/seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="pages/roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="pages/dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="pages/checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="pages/score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="text-center mb-16 relative mt-10">
+        <!-- Decoration: Circle -->
+        <div class="absolute -top-10 -left-10 w-24 h-24 border-4 border-red-300 rounded-full opacity-50 animate-bounce"
+            style="animation-duration: 3s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"></div>
+
+        <h1 class="text-6xl md:text-7xl font-bold text-gray-800 mb-2 relative z-10">
+            <span class="pen-underline">우리 수업 도구</span>
+        </h1>
+        <p class="text-2xl text-gray-500 mt-4 rotate-1">
+            <i class="fa-solid fa-pencil text-sm mr-2"></i>오늘도 즐거운 수업 시간!
+        </p>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="w-full max-w-4xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-4">
+
+            <!-- Card 1: 타이머 -->
+            <a href="pages/timer.html" class="group relative block">
+                <div class="tape tape-color-1"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-red-500">
+                    <i class="fa-solid fa-stopwatch text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">타이머</span>
+                </div>
+            </a>
+
+            <!-- Card 2: 자리배치 -->
+            <a href="pages/seatingarrangement.html" class="group relative block">
+                <div class="tape tape-color-2"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-green-500">
+                    <i class="fa-solid fa-chair text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">자리배치</span>
+                </div>
+            </a>
+
+            <!-- Card 3: 돌림판 -->
+            <a href="pages/roulette.html" class="group relative block">
+                <div class="tape tape-color-3"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-blue-500">
+                    <i class="fa-solid fa-dharmachakra text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">돌림판</span>
+                </div>
+            </a>
+
+            <!-- Card 4: 소음측정기 -->
+            <a href="pages/dB.html" class="group relative block">
+                <div class="tape tape-color-4"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-yellow-500">
+                    <i class="fa-solid fa-volume-high text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">소음측정기</span>
+                </div>
+            </a>
+
+            <!-- Card 5: 체크리스트 -->
+            <a href="pages/checklist.html" class="group relative block">
+                <div class="tape tape-color-5"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-purple-500">
+                    <i class="fa-solid fa-list-check text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">체크리스트</span>
+                </div>
+            </a>
+
+            <!-- Card 6: 점수판 -->
+            <a href="pages/score.html" class="group relative block">
+                <div class="tape tape-color-6"></div>
+                <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-orange-500">
+                    <i class="fa-solid fa-trophy text-5xl text-gray-400 mb-4 doodle-icon transition-colors"></i>
+                    <span class="text-3xl font-bold">점수판</span>
+                </div>
+            </a>
+
+
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p class="mb-2">
+            <i class="fa-solid fa-heart text-red-300 animate-pulse"></i>
+            선생님과 학생이 함께 만드는 교실
+        </p>
+        <div class="w-full max-w-xs mx-auto h-0.5 bg-gray-300 rounded-full"></div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+
+</body>
+
+</html>

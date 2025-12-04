@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심플 누적 타이머</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --hover-color: #2563eb;
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --display-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Gamja Flower', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 100px;
+            /* Space for nav */
+        }
+
+        .container {
+            background-color: var(--display-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 2rem;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2.5rem;
+            color: #4b5563;
+        }
+
+        #timer-display {
+            font-size: 5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin: 1rem 0;
+            color: var(--primary-color);
+            letter-spacing: -2px;
+            font-family: 'Noto Sans KR', sans-serif;
+            /* Keep numbers readable */
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            transition: width 0.2s linear;
+            /* 반응성을 위해 transition 시간 단축 */
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-color);
+            user-select: none;
+            /* 버튼 텍스트 선택 방지 */
+            font-family: 'Gamja Flower', cursive;
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* + 기호 추가하여 누적됨을 표시 */
+        .add-btn::before {
+            content: '+ ';
+            opacity: 0.5;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #stop-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            width: 100%;
+            font-size: 1.5rem;
+        }
+
+        #stop-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .time-up {
+            animation: blink 1s infinite;
+            color: #ef4444 !important;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link active">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1><i class="fas fa-clock text-blue-500 mr-2"></i>누적 타이머</h1>
+
+        <div id="timer-display">00:00</div>
+
+        <div class="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <div class="button-grid">
+            <button class="add-btn" onclick="addTime(10)">10초</button>
+            <button class="add-btn" onclick="addTime(30)">30초</button>
+            <button class="add-btn" onclick="addTime(60)">1분</button>
+            <button class="add-btn" onclick="addTime(600)">10분</button>
+            <button class="add-btn" onclick="addTime(1800)">30분</button>
+            <button class="add-btn" onclick="addTime(3600)">1시간</button>
+        </div>
+
+        <div class="control-buttons">
+            <button id="stop-btn" onclick="resetTimer()">초기화 / 중지</button>
+        </div>
+    </div>
+
+    <script>
+        let countdown = null;   // setInterval ID
+        let endTime = 0;        // 목표 종료 시간 (Timestamp)
+        let totalTime = 0;      // 전체 설정 시간 (진행 바 계산용)
+        let timeLeft = 0;       // 남은 시간 (초)
+
+        const display = document.getElementById('timer-display');
+        const progressBar = document.getElementById('progress-bar');
+
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
+
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function playAlarm() {
+            playBeep();
+            setTimeout(playBeep, 800);
+            setTimeout(playBeep, 1600);
+        }
+
+        // 시간 추가 (누적) 함수
+        function addTime(seconds) {
+            initAudio(); // 클릭 시 오디오 권한 획득
+            display.classList.remove('time-up'); // 알림 중이었다면 해제
+
+            if (!countdown) {
+                // 타이머가 멈춰있을 때: 새로 시작
+                totalTime = seconds;
+                timeLeft = seconds;
+                startTimer();
+            } else {
+                // 타이머가 작동 중일 때: 시간 추가
+                timeLeft += seconds;
+                totalTime += seconds; // 진행 바 비율 유지를 위해 전체 시간도 증가
+                endTime += (seconds * 1000); // 목표 시간 뒤로 미루기
+
+                updateDisplay(timeLeft);
+                updateProgressBar();
+            }
+        }
+
+        function startTimer() {
+            // 현재 시간 + 남은 시간으로 목표 시간 설정
+            endTime = Date.now() + (timeLeft * 1000);
+
+            updateDisplay(timeLeft);
+            updateProgressBar();
+
+            // 기존 인터벌 제거 (중복 방지)
+            if (countdown) clearInterval(countdown);
+
+            countdown = setInterval(() => {
+                const now = Date.now();
+                // 남은 시간 계산 (목표시간 - 현재시간)
+                const remaining = Math.ceil((endTime - now) / 1000);
+
+                timeLeft = remaining;
+
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    clearInterval(countdown);
+                    countdown = null; // 타이머 상태 초기화
+                    updateDisplay(0);
+                    updateProgressBar();
+                    timerFinished();
+                    return;
+                }
+
+                updateDisplay(timeLeft);
+                updateProgressBar();
+            }, 100);
+        }
+
+        function updateDisplay(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+
+            let timeString = '';
+
+            if (totalTime >= 3600 || seconds >= 3600) {
+                timeString = `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            } else {
+                timeString = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+
+            display.textContent = timeString;
+            document.title = `(${timeString}) 타이머`;
+        }
+
+        function updateProgressBar() {
+            if (totalTime <= 0) {
+                progressBar.style.width = "0%";
+                return;
+            }
+            // 시간이 추가되면 전체 시간(totalTime)도 늘어나므로 비율이 자연스럽게 조정됩니다.
+            const percentage = ((totalTime - timeLeft) / totalTime) * 100;
+            progressBar.style.width = `${Math.min(percentage, 100)}%`;
+        }
+
+        function timerFinished() {
+            display.classList.add('time-up');
+            playAlarm();
+            if (Notification.permission === "granted") {
+                new Notification("타이머 종료!", { body: "설정하신 시간이 다 되었습니다." });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
+        function resetTimer() {
+            if (countdown) clearInterval(countdown);
+            countdown = null;
+            timeLeft = 0;
+            totalTime = 0;
+            display.textContent = "00:00";
+            document.title = "심플 누적 타이머";
+            progressBar.style.width = "0%";
+            display.classList.remove('time-up');
+        }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+
+</html>

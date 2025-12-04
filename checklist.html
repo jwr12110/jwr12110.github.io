@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학급 활동 체크리스트</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --bg-color: #fdfbf7;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-radius: 12px;
+            --checked-bg: #e8f5e9;
+            --checked-border: #4CAF50;
+        }
+
+        body {
+            font-family: 'Gamja Flower', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-top: 100px;
+            /* Space for nav */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Page specific overrides */
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            border: 2px solid #e5e7eb;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 5px;
+        }
+
+        .student-card {
+            background-color: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 20px 5px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card:hover {
+            transform: translateY(-3px) rotate(-1deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .student-card.checked {
+            background-color: var(--checked-bg);
+            border-color: var(--checked-border);
+            color: #1b5e20;
+            transform: rotate(1deg);
+        }
+
+        .student-card.checked::after {
+            content: '✔';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        button {
+            font-family: 'Gamja Flower', cursive;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link active">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">🏫 학급 활동 체크리스트</h1>
+        <p class="text-xl text-gray-600">학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
+    </header>
+
+    <div class="controls">
+        <div class="w-full">
+            <textarea id="nameInput"
+                placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
+            <div class="text-sm text-gray-500 text-left mb-2">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-center w-full items-center">
+            <button class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition shadow"
+                onclick="generateFromList()">입력 명단 생성</button>
+
+            <div class="flex-grow"></div>
+
+            <div class="flex items-center gap-2">
+                <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수"
+                    class="border p-2 rounded-lg w-20 text-center">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition shadow"
+                    onclick="generateRandom()">랜덤 생성</button>
+            </div>
+
+            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition shadow"
+                onclick="resetChecks()">체크 초기화</button>
+        </div>
+
+        <div class="text-xl font-bold text-gray-700 mt-2 pt-2 border-t w-full text-center">
+            완료: <span id="completedCount" class="text-green-600 text-2xl">0</span> / <span id="totalCount"
+                class="text-2xl">0</span>
+        </div>
+    </div>
+
+    <div id="studentGrid" class="grid-container">
+        <!-- 자바스크립트로 카드가 여기에 생성됩니다 -->
+    </div>
+
+    <script>
+        // 랜덤 이름 생성을 위한 데이터
+        const lastNames = ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권", "황", "안", "송", "류", "전", "홍", "고", "문", "양", "손", "배", "조", "백", "허", "유"];
+        const firstNames = ["민준", "서준", "도윤", "예준", "시우", "하준", "지호", "지우", "준우", "서현", "서연", "지우", "지유", "하은", "서윤", "민서", "지안", "윤서", "채원", "다은", "은우", "수아", "나은", "예린", "시윤", "유준", "현우", "건우", "우진", "민재"];
+
+        // 랜덤 정수 생성 함수
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        // 랜덤 이름 조합 함수
+        function generateRandomName() {
+            const last = lastNames[getRandomInt(lastNames.length)];
+            const first = firstNames[getRandomInt(firstNames.length)];
+            return last + first;
+        }
+
+        // 초기 실행: 랜덤 25명 생성
+        window.onload = function () {
+            generateRandom();
+        };
+
+        // 1. 랜덤 명단 생성 함수
+        function generateRandom() {
+            const countInput = document.getElementById('randomCount');
+            let count = parseInt(countInput.value);
+
+            if (count < 1) count = 1;
+            if (count > 200) {
+                alert("최대 200명까지만 가능합니다.");
+                count = 200;
+                countInput.value = 200;
+            }
+
+            const names = [];
+            for (let i = 0; i < count; i++) {
+                names.push(generateRandomName());
+            }
+
+            // 입력창도 업데이트 (선택사항)
+            document.getElementById('nameInput').value = names.join(', ');
+
+            createCards(names);
+        }
+
+        // 2. 입력 명단 생성 함수
+        function generateFromList() {
+            const input = document.getElementById('nameInput').value;
+
+            if (!input.trim()) {
+                alert("이름을 입력해주세요!");
+                return;
+            }
+
+            // 쉼표나 줄바꿈으로 분리 후 공백 제거
+            let names = input.split(/[\n,]+/).map(name => name.trim()).filter(name => name !== "");
+
+            if (names.length === 0) {
+                alert("유효한 이름이 없습니다.");
+                return;
+            }
+
+            createCards(names);
+        }
+
+        // 공통 카드 생성 로직
+        function createCards(nameList) {
+            const grid = document.getElementById('studentGrid');
+            const totalCountSpan = document.getElementById('totalCount');
+            const completedCountSpan = document.getElementById('completedCount');
+
+            // 초기화
+            grid.innerHTML = '';
+            completedCountSpan.textContent = '0';
+            totalCountSpan.textContent = nameList.length;
+
+            nameList.forEach((name, index) => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+
+                // 클릭 이벤트 (체크)
+                card.onclick = function (e) {
+                    // contenteditable 요소 클릭 시 체크 방지
+                    if (e.target.isContentEditable) return;
+                    toggleCheck(this);
+                };
+
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'block text-gray-400 text-sm mb-1';
+                numberSpan.textContent = (index + 1) + '번';
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'text-xl font-bold outline-none border-b border-transparent focus:border-gray-400 focus:bg-gray-50';
+                nameDiv.textContent = name;
+                // 이름 수정 가능하도록 설정
+                nameDiv.contentEditable = true;
+
+                // 엔터키 입력시 줄바꿈 방지하고 포커스 해제
+                nameDiv.onkeydown = function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                };
+
+                card.appendChild(numberSpan);
+                card.appendChild(nameDiv);
+                grid.appendChild(card);
+            });
+        }
+
+        // 체크 토글 함수
+        function toggleCheck(cardElement) {
+            cardElement.classList.toggle('checked');
+            updateCount();
+        }
+
+        // 체크 상태 초기화 함수
+        function resetChecks() {
+            const cards = document.querySelectorAll('.student-card');
+            cards.forEach(card => {
+                card.classList.remove('checked');
+            });
+            updateCount();
+        }
+
+        // 카운트 업데이트 함수
+        function updateCount() {
+            const checkedCards = document.querySelectorAll('.student-card.checked');
+            const completedCountSpan = document.getElementById('completedCount');
+            completedCountSpan.textContent = checkedCards.length;
+        }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>

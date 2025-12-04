@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제외되는 돌림판 게임</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Gamja Flower', cursive;
+            background-color: #fdfbf7;
+            padding-top: 100px;
+            /* Space for nav */
+        }
+
+        /* 캔버스 래퍼 및 포인터 스타일 */
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ef4444;
+            /* red-500 */
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+            max-width: 90%;
+            width: 300px;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        button {
+            font-family: 'Gamja Flower', cursive;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link active">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <div
+        class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row border-2 border-gray-200">
+
+        <!-- 왼쪽: 설정 패널 -->
+        <div class="w-full md:w-1/3 p-6 bg-slate-50 border-r border-slate-200 overflow-y-auto max-h-[80vh]">
+            <h1 class="text-3xl font-bold text-slate-800 mb-6">⚙️ 돌림판 설정</h1>
+
+            <div class="mb-4">
+                <label class="block text-xl font-medium text-slate-700 mb-2">선택지 개수</label>
+                <div class="flex gap-2">
+                    <input type="number" id="itemCount" min="2" max="20" value="4"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg">
+                    <button onclick="generateInputs()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-lg">
+                        설정
+                    </button>
+                </div>
+            </div>
+
+            <div id="inputContainer" class="space-y-2 mb-6">
+                <!-- 동적으로 input이 생성되는 공간 -->
+            </div>
+
+            <button onclick="initWheel()"
+                class="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition shadow-md text-xl">
+                돌림판에 적용하기
+            </button>
+
+            <p class="text-sm text-slate-500 mt-4 text-center">
+                * '돌리기' 버튼을 누르면 당첨된 항목은 목록에서 사라집니다.
+            </p>
+        </div>
+
+        <!-- 오른쪽: 돌림판 화면 -->
+        <div class="w-full md:w-2/3 p-6 flex flex-col items-center justify-center bg-white relative">
+            <div class="wheel-container mb-8">
+                <div class="pointer"></div>
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+            </div>
+
+            <button id="spinBtn" onclick="spinWheel()" disabled
+                class="px-10 py-4 bg-indigo-600 text-white text-2xl font-bold rounded-full shadow-lg 
+                           hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition transform hover:scale-105 active:scale-95">
+                돌리기!
+            </button>
+        </div>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content shadow-2xl">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">🎉 당첨! 🎉</h2>
+            <p id="winnerName" class="text-4xl font-extrabold text-indigo-600 mb-6 word-break">결과</p>
+            <button onclick="closeModalAndRemove()"
+                class="w-full py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition text-xl">
+                확인 (목록에서 제외)
+            </button>
+        </div>
+    </div>
+
+    <!-- 전부 다 뽑았을 때 모달 -->
+    <div id="endModal" class="modal">
+        <div class="modal-content shadow-2xl">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">모든 항목을 뽑았습니다!</h2>
+            <button onclick="resetGame()"
+                class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xl">
+                처음부터 다시하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+            '#FF6384', '#C9CBCF', '#7BC8F6', '#E6E6FA', '#FFB6C1', '#98FB98'
+        ];
+
+        let items = [];
+        let currentRotation = 0;
+        let isSpinning = false;
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const modal = document.getElementById('resultModal');
+        const endModal = document.getElementById('endModal');
+        const winnerText = document.getElementById('winnerName');
+
+        // 초기 실행
+        window.onload = () => {
+            generateInputs();
+            initWheel(); // 초기값으로 휠 그리기
+        };
+
+        // 입력 필드 생성
+        function generateInputs() {
+            const count = parseInt(document.getElementById('itemCount').value);
+            const container = document.getElementById('inputContainer');
+            container.innerHTML = '';
+
+            if (count < 2) {
+                alert('최소 2개 이상의 항목이 필요합니다.');
+                return;
+            }
+
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                div.innerHTML = `
+                    <span class="w-6 text-slate-400 font-bold mr-2 text-lg">${i + 1}.</span>
+                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-lg" 
+                           value="항목 ${i + 1}" placeholder="내용 입력">
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        // 휠 데이터 초기화 및 그리기
+        function initWheel() {
+            const inputs = document.querySelectorAll('.item-input');
+            items = Array.from(inputs).map(input => input.value).filter(val => val.trim() !== "");
+
+            if (items.length < 1) {
+                alert("항목을 입력해주세요.");
+                spinBtn.disabled = true;
+                return;
+            }
+
+            drawWheel();
+            spinBtn.disabled = false;
+            currentRotation = 0; // 회전각도 초기화
+        }
+
+        // 휠 그리기 (Canvas)
+        function drawWheel() {
+            const numItems = items.length;
+            const arcSize = (2 * Math.PI) / numItems;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 10; // 여백
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. 섹션 그리기
+            for (let i = 0; i < numItems; i++) {
+                const angle = i * arcSize;
+
+                ctx.beginPath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
+                ctx.lineTo(centerX, centerY);
+                ctx.fill();
+                ctx.stroke();
+
+                // 2. 텍스트 그리기
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 20px 'Gamja Flower'";
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(items[i], radius - 20, 10);
+                ctx.restore();
+            }
+        }
+
+        // 돌리기 시작
+        function spinWheel() {
+            if (isSpinning || items.length === 0) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+
+            // 랜덤 회전수 (기본 5바퀴 + 랜덤 각도)
+            // Canvas는 0도가 3시 방향이므로, 12시 방향(포인터)에서 멈추려면 보정 필요
+            // 하지만 시각적으로 그냥 많이 돌리고 멈춘 위치를 계산하는 것이 편함
+            const randomDegree = Math.floor(Math.random() * 360) + 1800; // 최소 5바퀴
+            currentRotation += randomDegree;
+
+            // CSS Transition으로 회전 애니메이션 처리 (부드러운 감속)
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // 애니메이션 종료 후 결과 처리 (5초 후)
+            setTimeout(() => {
+                showResult();
+            }, 5000);
+        }
+
+        // 결과 계산 및 표시
+        function showResult() {
+            // 현재 실제 각도 (360도로 나눈 나머지)
+            const actualDeg = currentRotation % 360;
+
+            // Canvas 0도 = 3시 방향. CSS rotate는 시계방향.
+            // 포인터는 12시(-90도 or 270도)에 위치.
+            // 따라서 270도에서 회전각을 뺀 위치가 포인터가 가리키는 휠의 각도임.
+            // 계산을 쉽게 하기 위해: (360 - actualDeg + 270) % 360 = 포인터가 가리키는 내부 각도
+
+            // 더 간단한 논리:
+            // 휠이 시계방향으로 X도 돌았다면, 12시 방향에 있는 아이템은 반시계방향으로 X도 만큼 인덱스가 밀린 것과 같음.
+            // 시작점(0, 인덱스0)은 3시 방향. 12시 방향은 270도(3/2 pi).
+            // 섹터 하나당 각도
+            const sliceDeg = 360 / items.length;
+
+            // 270도(12시) 위치의 값을 찾기 위해 보정
+            // 현재 0번 인덱스의 위치 = actualDeg
+            // 12시 위치(270도)에 있는 각도를 구함
+            let targetAngle = (270 - actualDeg) % 360;
+            if (targetAngle < 0) targetAngle += 360;
+
+            const winningIndex = Math.floor(targetAngle / sliceDeg);
+
+            const winner = items[winningIndex];
+
+            // 결과 표시
+            winnerText.innerText = winner;
+            modal.classList.add('show');
+
+            // 삭제를 위해 전역 변수에 저장해둠 (사실 items에서 바로 빼도 되지만 모달 닫을 때 빼는 게 UX상 좋음)
+            window.lastWinnerIndex = winningIndex;
+        }
+
+        // 모달 닫고 항목 제외하기
+        function closeModalAndRemove() {
+            modal.classList.remove('show');
+            isSpinning = false;
+
+            // 당첨된 항목 제거
+            if (window.lastWinnerIndex !== undefined && items.length > 0) {
+                // UI에서 해당 값 찾아서 제거하지 않고, 그냥 내부 배열에서 제거 후 다시 그림
+                // 단, 사용자가 텍스트를 수정했을 수도 있으므로 값 기준으로 제거
+                const winnerValue = items[window.lastWinnerIndex];
+
+                // items 배열에서 제거
+                items.splice(window.lastWinnerIndex, 1);
+
+                // 설정 패널의 input들도 업데이트 (동기화)
+                syncInputsWithItems();
+
+                // 휠 다시 그리기 (각도 초기화 하여 정자세로 보여줌)
+                canvas.style.transition = 'none';
+                canvas.style.transform = `rotate(0deg)`;
+                currentRotation = 0;
+
+                // 약간의 딜레이 후 transition 복구 (다음 스핀을 위해)
+                setTimeout(() => {
+                    canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                }, 50);
+
+                if (items.length > 0) {
+                    drawWheel();
+                    spinBtn.disabled = false;
+                } else {
+                    // 더 이상 남은 항목이 없음
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    endModal.classList.add('show');
+                    spinBtn.disabled = true;
+                }
+            }
+        }
+
+        // 현재 items 배열 상태로 왼쪽 입력 패널 동기화
+        function syncInputsWithItems() {
+            const container = document.getElementById('inputContainer');
+            container.innerHTML = '';
+            document.getElementById('itemCount').value = items.length;
+
+            items.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                div.innerHTML = `
+                    <span class="w-6 text-slate-400 font-bold mr-2 text-lg">${i + 1}.</span>
+                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-lg" 
+                           value="${item}" placeholder="내용 입력">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // 게임 리셋
+        function resetGame() {
+            endModal.classList.remove('show');
+            document.getElementById('itemCount').value = 4;
+            generateInputs();
+            initWheel();
+        }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
