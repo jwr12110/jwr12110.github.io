@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>우리 수업 도구 - My Class Sketchbook</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Gamja Flower - 귀여운 손글씨) -->
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
     
     <style>
@@ -95,13 +92,75 @@
             transform: rotate(-1deg);
         }
 
+        /* Navigation Link Hover Effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -2px;
+            left: 0;
+            background-color: #ef4444; /* Red Pen Color */
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body class="min-h-screen flex flex-col items-center pt-24 pb-6 px-6"> 
+    <nav class="fixed top-0 left-0 w-full bg-[#fdfbf7]/95 backdrop-blur-sm border-b-2 border-dashed border-gray-300 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                
+                <a href="index.html" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
+                    <i class="fa-solid fa-shapes text-2xl text-yellow-500"></i>
+                    <span class="text-2xl font-bold">우리반 도구함</span>
+                </a>
 
-    <!-- Header Section -->
-    <header class="text-center mb-16 relative">
-        <!-- Decoration: Circle -->
+                <div class="hidden md:flex space-x-8 text-xl">
+                    <a href="timer.html" class="nav-link hover:text-red-500 transition-colors">타이머</a>
+                    <a href="seatingarrangement.html" class="nav-link hover:text-green-500 transition-colors">자리배치</a>
+                    <a href="roulette.html" class="nav-link hover:text-blue-500 transition-colors">돌림판</a>
+                    <a href="checklist.html" class="nav-link hover:text-purple-500 transition-colors">체크리스트</a>
+                    </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b-2 border-dashed border-gray-200">
+            <a href="timer.html" class="block py-3 px-4 text-xl hover:bg-yellow-50 hover:text-yellow-600 transition-colors border-b border-gray-100">
+                <i class="fa-solid fa-stopwatch w-8 text-center"></i> 타이머
+            </a>
+            <a href="seatingarrangement.html" class="block py-3 px-4 text-xl hover:bg-green-50 hover:text-green-600 transition-colors border-b border-gray-100">
+                <i class="fa-solid fa-chair w-8 text-center"></i> 자리배치
+            </a>
+            <a href="roulette.html" class="block py-3 px-4 text-xl hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-100">
+                <i class="fa-solid fa-dharmachakra w-8 text-center"></i> 돌림판
+            </a>
+            <a href="dB.html" class="block py-3 px-4 text-xl hover:bg-yellow-50 hover:text-orange-600 transition-colors border-b border-gray-100">
+                <i class="fa-solid fa-volume-high w-8 text-center"></i> 소음측정
+            </a>
+            <a href="checklist.html" class="block py-3 px-4 text-xl hover:bg-purple-50 hover:text-purple-600 transition-colors border-b border-gray-100">
+                <i class="fa-solid fa-list-check w-8 text-center"></i> 체크리스트
+            </a>
+            <a href="score.html" class="block py-3 px-4 text-xl hover:bg-orange-50 hover:text-red-600 transition-colors">
+                <i class="fa-solid fa-trophy w-8 text-center"></i> 점수판
+            </a>
+        </div>
+    </nav>
+
+    <header class="text-center mb-12 relative mt-4">
         <div class="absolute -top-10 -left-10 w-24 h-24 border-4 border-red-300 rounded-full opacity-50 animate-bounce" style="animation-duration: 3s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"></div>
         
         <h1 class="text-6xl md:text-7xl font-bold text-gray-800 mb-2 relative z-10">
@@ -112,11 +171,9 @@
         </p>
     </header>
 
-    <!-- Main Grid -->
     <main class="w-full max-w-4xl">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-4">
 
-            <!-- Card 1: 타이머 -->
             <a href="timer.html" class="group relative block">
                 <div class="tape tape-color-1"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-red-500">
@@ -125,7 +182,6 @@
                 </div>
             </a>
 
-            <!-- Card 2: 자리배치 -->
             <a href="seatingarrangement.html" class="group relative block">
                 <div class="tape tape-color-2"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-green-500">
@@ -134,7 +190,6 @@
                 </div>
             </a>
 
-            <!-- Card 3: 돌림판 -->
             <a href="roulette.html" class="group relative block">
                 <div class="tape tape-color-3"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-blue-500">
@@ -143,7 +198,6 @@
                 </div>
             </a>
 
-            <!-- Card 4: 소음측정기 -->
             <a href="dB.html" class="group relative block">
                 <div class="tape tape-color-4"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-yellow-500">
@@ -152,7 +206,6 @@
                 </div>
             </a>
 
-            <!-- Card 5: 체크리스트 -->
             <a href="checklist.html" class="group relative block">
                 <div class="tape tape-color-5"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-purple-500">
@@ -161,7 +214,6 @@
                 </div>
             </a>
 
-            <!-- Card 6: 점수판 -->
             <a href="score.html" class="group relative block">
                 <div class="tape tape-color-6"></div>
                 <div class="doodle-box h-48 flex flex-col items-center justify-center p-6 group-hover:text-orange-500">
@@ -173,7 +225,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="mt-16 text-center text-gray-400 text-lg">
         <p class="mb-2">
             <i class="fa-solid fa-heart text-red-300 animate-pulse"></i>
@@ -181,6 +232,15 @@
         </p>
         <div class="w-full max-w-xs mx-auto h-0.5 bg-gray-300 rounded-full"></div>
     </footer>
+
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
 
 </body>
 </html>
