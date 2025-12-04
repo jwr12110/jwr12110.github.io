@@ -1,43 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>심플 누적 타이머</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Noto+Sans+KR:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="../styles.css">
     <style>
         :root {
             --primary-color: #3b82f6;
             --hover-color: #2563eb;
-            --bg-color: #f3f4f6;
-            --text-color: #1f2937;
             --display-bg: #ffffff;
-        }
-
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
         }
 
         .container {
             background-color: var(--display-bg);
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 90%;
+            width: 100%;
             max-width: 500px;
-        }
-
-        h1 {
-            margin-top: 0;
-            font-size: 1.5rem;
-            color: #4b5563;
         }
 
         #timer-display {
@@ -62,7 +53,7 @@
             height: 100%;
             width: 0%;
             background-color: var(--primary-color);
-            transition: width 0.2s linear; /* 반응성을 위해 transition 시간 단축 */
+            transition: width 0.2s linear;
         }
 
         .button-grid {
@@ -72,7 +63,7 @@
             margin-bottom: 20px;
         }
 
-        button {
+        .timer-btn {
             background-color: white;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
@@ -81,18 +72,18 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            color: var(--text-color);
-            user-select: none; /* 버튼 텍스트 선택 방지 */
+            color: #1f2937;
+            user-select: none;
         }
 
-        button:hover {
+        .timer-btn:hover {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: white;
             transform: translateY(-2px);
         }
 
-        button:active {
+        .timer-btn:active {
             transform: translateY(0);
         }
 
@@ -116,8 +107,13 @@
             color: white;
             border: none;
             width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
-        
+
         #stop-btn:hover {
             background-color: #dc2626;
         }
@@ -128,46 +124,85 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
 
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>누적 타이머</h1>
-        
-        <div id="timer-display">00:00</div>
-        
-        <div class="progress-bar-container">
-            <div id="progress-bar"></div>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-shapes"></i>
+                우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <div class="button-grid">
-            <button class="add-btn" onclick="addTime(10)">10초</button>
-            <button class="add-btn" onclick="addTime(30)">30초</button>
-            <button class="add-btn" onclick="addTime(60)">1분</button>
-            <button class="add-btn" onclick="addTime(600)">10분</button>
-            <button class="add-btn" onclick="addTime(1800)">30분</button>
-            <button class="add-btn" onclick="addTime(3600)">1시간</button>
-        </div>
+    <!-- Header -->
+    <header class="text-center my-10">
+        <h1 class="text-5xl font-bold text-gray-800 mb-2">
+            <span class="pen-underline">누적 타이머</span>
+        </h1>
+        <p class="text-xl text-gray-500">시간을 누적하여 설정할 수 있는 타이머입니다.</p>
+    </header>
 
-        <div class="control-buttons">
-            <button id="stop-btn" onclick="resetTimer()">초기화 / 중지</button>
+    <main class="flex items-center justify-center w-full px-4 pb-10">
+        <div class="container">
+            <div id="timer-display">00:00</div>
+
+            <div class="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div class="button-grid">
+                <button class="timer-btn add-btn" onclick="addTime(10)">10초</button>
+                <button class="timer-btn add-btn" onclick="addTime(30)">30초</button>
+                <button class="timer-btn add-btn" onclick="addTime(60)">1분</button>
+                <button class="timer-btn add-btn" onclick="addTime(600)">10분</button>
+                <button class="timer-btn add-btn" onclick="addTime(1800)">30분</button>
+                <button class="timer-btn add-btn" onclick="addTime(3600)">1시간</button>
+            </div>
+
+            <div class="control-buttons">
+                <button id="stop-btn" onclick="resetTimer()">
+                    <i class="fa-solid fa-rotate-right mr-2"></i>초기화 / 중지
+                </button>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script>
         let countdown = null;   // setInterval ID
         let endTime = 0;        // 목표 종료 시간 (Timestamp)
         let totalTime = 0;      // 전체 설정 시간 (진행 바 계산용)
         let timeLeft = 0;       // 남은 시간 (초)
-        
+
         const display = document.getElementById('timer-display');
         const progressBar = document.getElementById('progress-bar');
-        
+
         let audioCtx;
 
         function initAudio() {
@@ -220,7 +255,7 @@
                 timeLeft += seconds;
                 totalTime += seconds; // 진행 바 비율 유지를 위해 전체 시간도 증가
                 endTime += (seconds * 1000); // 목표 시간 뒤로 미루기
-                
+
                 updateDisplay(timeLeft);
                 updateProgressBar();
             }
@@ -229,7 +264,7 @@
         function startTimer() {
             // 현재 시간 + 남은 시간으로 목표 시간 설정
             endTime = Date.now() + (timeLeft * 1000);
-            
+
             updateDisplay(timeLeft);
             updateProgressBar();
 
@@ -240,7 +275,7 @@
                 const now = Date.now();
                 // 남은 시간 계산 (목표시간 - 현재시간)
                 const remaining = Math.ceil((endTime - now) / 1000);
-                
+
                 timeLeft = remaining;
 
                 if (timeLeft <= 0) {
@@ -264,7 +299,7 @@
             const s = seconds % 60;
 
             let timeString = '';
-            
+
             if (totalTime >= 3600 || seconds >= 3600) {
                 timeString = `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
             } else {
@@ -311,4 +346,5 @@
         }
     </script>
 </body>
+
 </html>

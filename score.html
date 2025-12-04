@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스포츠 경기 점수판</title>
-    <!-- Tailwind CSS (스타일링을 위해 CDN 사용) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Gamja+Flower&family=Noto+Sans+KR:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="../styles.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Noto+Sans+KR:wght@400;700&display=swap');
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #1a1a1a; /* 어두운 배경 */
-            color: white;
-        }
-
         .digital-font {
-            font-family: 'Black Ops One', cursive; /* 점수판용 디지털 폰트 */
+            font-family: 'Black Ops One', cursive;
         }
 
         /* 버튼 눌림 효과 */
         .btn-active:active {
             transform: scale(0.95);
         }
-        
+
         /* 모바일 반응형 조정 */
         @media (max-width: 640px) {
             .score-container {
@@ -33,23 +34,50 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10">
 
-    <!-- 헤더 -->
-    <header class="mb-8 text-center">
-        <h1 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">SPORTS SCOREBOARD</h1>
-        <div class="bg-gray-800 px-4 py-2 rounded-full inline-block">
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-shapes"></i>
+                우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center my-10">
+        <h1 class="text-5xl font-bold text-gray-800 mb-2">
+            <span class="pen-underline">점수판</span>
+        </h1>
+        <p class="text-xl text-gray-500">스포츠 경기 점수판입니다.</p>
+        <div class="mt-4 inline-block bg-gray-800 px-4 py-2 rounded-full text-white">
             <span class="text-gray-400 mr-2">현재 라운드:</span>
-            <span id="current-round-display" class="text-xl font-bold text-white">1</span>
+            <span id="current-round-display" class="text-xl font-bold">1</span>
         </div>
     </header>
 
     <!-- 메인 점수판 영역 -->
-    <main class="w-full max-w-4xl px-4">
-        
+    <main class="w-full max-w-4xl px-4 mx-auto pb-10">
+
         <!-- 팀 점수 컨테이너 -->
-        <div class="score-container flex justify-between items-center bg-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl border border-gray-700 relative">
-            
+        <div
+            class="score-container flex justify-between items-center bg-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl border border-gray-700 relative">
+
             <!-- VS 배지 (중앙) -->
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block">
                 <span class="bg-yellow-500 text-black font-black px-3 py-1 rounded text-xl italic">VS</span>
@@ -57,15 +85,20 @@
 
             <!-- Team A (블루) -->
             <div class="flex flex-col items-center w-full md:w-5/12">
-                <input type="text" value="HOME TEAM" class="bg-transparent text-center text-blue-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-blue-400 transition-colors w-full" aria-label="Team A Name">
-                
-                <div class="bg-black rounded-xl p-6 w-full text-center border-4 border-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+                <input type="text" value="HOME TEAM"
+                    class="bg-transparent text-center text-blue-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-blue-400 transition-colors w-full"
+                    aria-label="Team A Name">
+
+                <div
+                    class="bg-black rounded-xl p-6 w-full text-center border-4 border-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
                     <span id="score-a" class="digital-font text-8xl md:text-9xl text-white block leading-none">0</span>
                 </div>
 
                 <div class="flex gap-4 mt-6 w-full justify-center">
-                    <button onclick="updateScore('A', -1)" class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
-                    <button onclick="updateScore('A', 1)" class="btn-active w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
+                    <button onclick="updateScore('A', -1)"
+                        class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
+                    <button onclick="updateScore('A', 1)"
+                        class="btn-active w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
                 </div>
             </div>
 
@@ -74,48 +107,55 @@
 
             <!-- Team B (레드) -->
             <div class="flex flex-col items-center w-full md:w-5/12">
-                <input type="text" value="AWAY TEAM" class="bg-transparent text-center text-red-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-red-400 transition-colors w-full" aria-label="Team B Name">
-                
-                <div class="bg-black rounded-xl p-6 w-full text-center border-4 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+                <input type="text" value="AWAY TEAM"
+                    class="bg-transparent text-center text-red-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-red-400 transition-colors w-full"
+                    aria-label="Team B Name">
+
+                <div
+                    class="bg-black rounded-xl p-6 w-full text-center border-4 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
                     <span id="score-b" class="digital-font text-8xl md:text-9xl text-white block leading-none">0</span>
                 </div>
 
                 <div class="flex gap-4 mt-6 w-full justify-center">
-                    <button onclick="updateScore('B', -1)" class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
-                    <button onclick="updateScore('B', 1)" class="btn-active w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
+                    <button onclick="updateScore('B', -1)"
+                        class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
+                    <button onclick="updateScore('B', 1)"
+                        class="btn-active w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
                 </div>
             </div>
         </div>
 
         <!-- 컨트롤 버튼 -->
         <div class="flex justify-center gap-4 mt-8">
-            <button onclick="saveRound()" class="btn-active px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+            <button onclick="saveRound()"
+                class="btn-active px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
                 라운드 저장 및 초기화
             </button>
-            <button onclick="resetAll()" class="btn-active px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            <button onclick="resetAll()"
+                class="btn-active px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i>
                 전체 초기화
             </button>
         </div>
 
         <!-- 라운드 기록 -->
-        <div class="mt-12">
-            <h3 class="text-xl font-bold text-gray-300 mb-4 border-b border-gray-700 pb-2">라운드별 기록</h3>
+        <div class="mt-12 bg-white p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">라운드별 기록</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-center border-collapse">
                     <thead>
-                        <tr class="text-gray-400 border-b border-gray-700">
+                        <tr class="text-gray-500 border-b border-gray-200">
                             <th class="py-2">라운드</th>
-                            <th class="py-2 text-blue-400">HOME 점수</th>
-                            <th class="py-2 text-red-400">AWAY 점수</th>
+                            <th class="py-2 text-blue-600">HOME 점수</th>
+                            <th class="py-2 text-red-600">AWAY 점수</th>
                             <th class="py-2">승리 팀</th>
                         </tr>
                     </thead>
-                    <tbody id="history-body" class="text-white">
+                    <tbody id="history-body" class="text-gray-800">
                         <!-- 자바스크립트로 기록이 여기에 추가됩니다 -->
                         <tr id="empty-history">
-                            <td colspan="4" class="py-8 text-gray-500 italic">아직 기록된 라운드가 없습니다.</td>
+                            <td colspan="4" class="py-8 text-gray-400 italic">아직 기록된 라운드가 없습니다.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -124,23 +164,19 @@
 
     </main>
 
-    <footer class="mt-10 text-gray-500 text-sm">
-        &copy; Sports Scoreboard Generator
-    </footer>
-
     <!-- 자바스크립트 로직 -->
     <script>
         // 상태 변수
         let scoreA = 0;
         let scoreB = 0;
         let currentRound = 1;
-        
+
         // DOM 요소 가져오기
         const elScoreA = document.getElementById('score-a');
         const elScoreB = document.getElementById('score-b');
         const elRound = document.getElementById('current-round-display');
         const elHistoryBody = document.getElementById('history-body');
-        
+
         // 점수 변경 함수
         function updateScore(team, amount) {
             if (team === 'A') {
@@ -177,25 +213,25 @@
             // 승자 판별
             let winner = '-';
             let winnerClass = 'text-gray-400';
-            
+
             if (scoreA > scoreB) {
                 winner = 'HOME';
-                winnerClass = 'text-blue-400 font-bold';
+                winnerClass = 'text-blue-600 font-bold';
             } else if (scoreB > scoreA) {
                 winner = 'AWAY';
-                winnerClass = 'text-red-400 font-bold';
+                winnerClass = 'text-red-600 font-bold';
             } else {
                 winner = '무승부';
-                winnerClass = 'text-yellow-400';
+                winnerClass = 'text-yellow-600';
             }
 
             // 테이블 행 생성
             const row = document.createElement('tr');
-            row.className = 'border-b border-gray-800 hover:bg-gray-800 transition-colors';
+            row.className = 'border-b border-gray-100 hover:bg-gray-50 transition-colors';
             row.innerHTML = `
                 <td class="py-3 font-mono">ROUND ${currentRound}</td>
-                <td class="py-3 text-blue-300 font-bold text-lg">${scoreA}</td>
-                <td class="py-3 text-red-300 font-bold text-lg">${scoreB}</td>
+                <td class="py-3 text-blue-600 font-bold text-lg">${scoreA}</td>
+                <td class="py-3 text-red-600 font-bold text-lg">${scoreB}</td>
                 <td class="py-3 ${winnerClass}">${winner}</td>
             `;
 
@@ -207,7 +243,7 @@
             currentRound++;
             scoreA = 0;
             scoreB = 0;
-            
+
             // 화면 갱신
             elScoreA.textContent = 0;
             elScoreB.textContent = 0;
@@ -231,10 +267,11 @@
             // 3. 기록 테이블 내용을 완전히 비우고 '기록 없음' 메시지로 덮어쓰기
             elHistoryBody.innerHTML = `
                 <tr id="empty-history">
-                    <td colspan="4" class="py-8 text-gray-500 italic">아직 기록된 라운드가 없습니다.</td>
+                    <td colspan="4" class="py-8 text-gray-400 italic">아직 기록된 라운드가 없습니다.</td>
                 </tr>
             `;
         }
     </script>
 </body>
+
 </html>

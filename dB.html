@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>소음 측정기 & 경고 시스템</title>
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="../styles.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
-        
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            transition: background-color 0.3s;
-        }
-
         .meter-container {
             position: relative;
             width: 100%;
@@ -49,14 +48,23 @@
         }
 
         @keyframes pulse-red {
-            0% { background-color: #fee2e2; }
-            50% { background-color: #fca5a5; }
-            100% { background-color: #fee2e2; }
+            0% {
+                background-color: #fee2e2;
+            }
+
+            50% {
+                background-color: #fca5a5;
+            }
+
+            100% {
+                background-color: #fee2e2;
+            }
         }
 
         .btn-preset {
             transition: all 0.2s;
         }
+
         .btn-preset.active {
             ring-width: 4px;
             --tw-ring-color: rgb(59 130 246 / 0.5);
@@ -65,83 +73,117 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4" id="mainBody">
 
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6">
-        
-        <!-- Header -->
-        <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-microphone-lines text-blue-500 mr-2"></i>소음 측정기</h1>
-            <p class="text-gray-500 text-sm mt-1">지정된 소음을 넘으면 경고합니다.</p>
+<body id="mainBody">
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-shapes"></i>
+                우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <!-- Main Display -->
-        <div class="text-center space-y-2">
-            <div class="text-6xl font-mono font-bold text-gray-800 transition-colors" id="dbDisplay">0</div>
-            <div class="text-sm text-gray-400">DECIBELS (Approx)</div>
-        </div>
+    <!-- Header -->
+    <header class="text-center my-10">
+        <h1 class="text-5xl font-bold text-gray-800 mb-2">
+            <span class="pen-underline">소음 측정기</span>
+        </h1>
+        <p class="text-xl text-gray-500">지정된 소음을 넘으면 경고합니다.</p>
+    </header>
 
-        <!-- Visual Meter -->
-        <div class="relative pt-2 pb-6">
-            <div class="flex justify-between text-xs text-gray-400 mb-1 px-1">
-                <span>0</span>
-                <span>50</span>
-                <span>100</span>
+    <main class="flex items-center justify-center w-full px-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6">
+
+            <!-- Main Display -->
+            <div class="text-center space-y-2">
+                <div class="text-6xl font-mono font-bold text-gray-800 transition-colors" id="dbDisplay">0</div>
+                <div class="text-sm text-gray-400">DECIBELS (Approx)</div>
             </div>
-            <div class="meter-container">
-                <div class="meter-fill" id="meterFill"></div>
-                <div class="threshold-marker" id="thresholdMarker" style="left: 30%;"></div>
+
+            <!-- Visual Meter -->
+            <div class="relative pt-2 pb-6">
+                <div class="flex justify-between text-xs text-gray-400 mb-1 px-1">
+                    <span>0</span>
+                    <span>50</span>
+                    <span>100</span>
+                </div>
+                <div class="meter-container">
+                    <div class="meter-fill" id="meterFill"></div>
+                    <div class="threshold-marker" id="thresholdMarker" style="left: 30%;"></div>
+                </div>
+                <div class="text-center mt-2 text-sm font-medium text-gray-600">
+                    현재 설정: <span id="thresholdDisplay" class="text-blue-600">30</span> dB 이상 경고
+                </div>
             </div>
-            <div class="text-center mt-2 text-sm font-medium text-gray-600">
-                현재 설정: <span id="thresholdDisplay" class="text-blue-600">30</span> dB 이상 경고
+
+            <!-- Presets -->
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="setThreshold(30, 'study')" id="btnStudy"
+                    class="btn-preset active bg-green-100 hover:bg-green-200 text-green-800 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-2 border border-green-200">
+                    <i class="fas fa-book-open text-xl"></i>
+                    <span>공부 시간 (30dB)</span>
+                </button>
+                <button onclick="setThreshold(60, 'break')" id="btnBreak"
+                    class="btn-preset bg-orange-100 hover:bg-orange-200 text-orange-800 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-2 border border-orange-200">
+                    <i class="fas fa-coffee text-xl"></i>
+                    <span>쉬는 시간 (60dB)</span>
+                </button>
             </div>
-        </div>
 
-        <!-- Presets -->
-        <div class="grid grid-cols-2 gap-4">
-            <button onclick="setThreshold(30, 'study')" id="btnStudy" class="btn-preset active bg-green-100 hover:bg-green-200 text-green-800 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-2 border border-green-200">
-                <i class="fas fa-book-open text-xl"></i>
-                <span>공부 시간 (30dB)</span>
-            </button>
-            <button onclick="setThreshold(60, 'break')" id="btnBreak" class="btn-preset bg-orange-100 hover:bg-orange-200 text-orange-800 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-2 border border-orange-200">
-                <i class="fas fa-coffee text-xl"></i>
-                <span>쉬는 시간 (60dB)</span>
-            </button>
-        </div>
+            <!-- Sensitivity Slider -->
+            <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <label class="flex justify-between text-xs text-gray-500 mb-1">
+                    <span>마이크 민감도 보정</span>
+                    <span id="sensitivityValue">1.0x</span>
+                </label>
+                <input type="range" min="0.5" max="3.0" step="0.1" value="1.5" id="sensitivityRange"
+                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500">
+            </div>
 
-        <!-- Sensitivity Slider -->
-        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-            <label class="flex justify-between text-xs text-gray-500 mb-1">
-                <span>마이크 민감도 보정</span>
-                <span id="sensitivityValue">1.0x</span>
-            </label>
-            <input type="range" min="0.5" max="3.0" step="0.1" value="1.5" id="sensitivityRange" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500">
-        </div>
+            <!-- Main Controls -->
+            <div class="flex gap-3 pt-2">
+                <button id="btnStart" onclick="startMetering()"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-play"></i> 측정 시작
+                </button>
+                <button id="btnStop" onclick="stopMetering()"
+                    class="hidden flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-stop"></i> 중지
+                </button>
+            </div>
 
-        <!-- Main Controls -->
-        <div class="flex gap-3 pt-2">
-            <button id="btnStart" onclick="startMetering()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2">
-                <i class="fas fa-play"></i> 측정 시작
-            </button>
-            <button id="btnStop" onclick="stopMetering()" class="hidden flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2">
-                <i class="fas fa-stop"></i> 중지
-            </button>
-        </div>
-        
-        <!-- Mute Toggle -->
-        <div class="flex items-center justify-center gap-2 text-gray-500 text-sm cursor-pointer" onclick="toggleMute()">
-            <div id="muteIcon"><i class="fas fa-volume-up"></i></div>
-            <span id="muteText">경고음 켜짐</span>
-        </div>
+            <!-- Mute Toggle -->
+            <div class="flex items-center justify-center gap-2 text-gray-500 text-sm cursor-pointer"
+                onclick="toggleMute()">
+                <div id="muteIcon"><i class="fas fa-volume-up"></i></div>
+                <span id="muteText">경고음 켜짐</span>
+            </div>
 
-    </div>
+        </div>
+    </main>
 
     <!-- Error Modal (Hidden by default) -->
     <div id="errorModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg p-6 max-w-sm w-full">
             <h3 class="text-lg font-bold text-red-600 mb-2">마이크 접근 오류</h3>
             <p class="text-gray-600 mb-4">마이크 권한이 허용되지 않았거나 장치를 찾을 수 없습니다.</p>
-            <button onclick="document.getElementById('errorModal').classList.add('hidden')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">닫기</button>
+            <button onclick="document.getElementById('errorModal').classList.add('hidden')"
+                class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">닫기</button>
         </div>
     </div>
 
@@ -181,15 +223,15 @@
 
             // UI Update
             document.querySelectorAll('.btn-preset').forEach(btn => btn.classList.remove('active'));
-            if(mode === 'study') document.getElementById('btnStudy').classList.add('active');
-            if(mode === 'break') document.getElementById('btnBreak').classList.add('active');
+            if (mode === 'study') document.getElementById('btnStudy').classList.add('active');
+            if (mode === 'break') document.getElementById('btnBreak').classList.add('active');
         }
 
         function toggleMute() {
             isMuted = !isMuted;
             const icon = document.getElementById('muteIcon');
             const text = document.getElementById('muteText');
-            
+
             if (isMuted) {
                 icon.innerHTML = '<i class="fas fa-volume-mute text-gray-400"></i>';
                 text.innerText = '경고음 꺼짐';
@@ -206,7 +248,7 @@
                 if (isRunning) return;
 
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
+
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 microphone = audioContext.createMediaStreamSource(stream);
                 analyser = audioContext.createAnalyser();
@@ -219,7 +261,7 @@
                 // Note: ScriptProcessor is deprecated but widely supported for simple metering. 
                 // Alternatively we can use requestAnimationFrame. Let's use requestAnimationFrame for better performance.
                 isRunning = true;
-                
+
                 document.getElementById('btnStart').classList.add('hidden');
                 document.getElementById('btnStop').classList.remove('hidden');
 
@@ -240,7 +282,7 @@
             dbDisplay.innerText = "0";
             meterFill.style.width = "0%";
             mainBody.classList.remove('warning-active');
-            
+
             document.getElementById('btnStart').classList.remove('hidden');
             document.getElementById('btnStop').classList.add('hidden');
         }
@@ -262,8 +304,8 @@
             // Normalize and scale to simplified dB-like value (0-100)
             // Real dB requires calibration, this is a relative approximation
             // Sensitivity adjusts the input gain logic
-            let scaledDb = Math.round(average * sensitivity); 
-            
+            let scaledDb = Math.round(average * sensitivity);
+
             // Clamp value
             if (scaledDb > 100) scaledDb = 100;
             if (scaledDb < 0) scaledDb = 0;
@@ -303,7 +345,7 @@
 
         function playBeep() {
             if (!audioContext) return;
-            
+
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
@@ -313,13 +355,14 @@
             oscillator.type = 'sine';
             oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
             gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            
+
             oscillator.start();
-            
+
             // Fade out
             gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.5);
             oscillator.stop(audioContext.currentTime + 0.5);
         }
     </script>
 </body>
+
 </html>

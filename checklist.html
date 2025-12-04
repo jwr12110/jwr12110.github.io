@@ -1,50 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학급 활동 체크리스트</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="../styles.css">
     <style>
         :root {
             --primary-color: #4CAF50;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --border-radius: 12px;
             --checked-bg: #e8f5e9;
             --checked-border: #4CAF50;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #666;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
         }
 
         /* 컨트롤 패널 스타일 */
@@ -52,15 +27,17 @@
             background: white;
             padding: 20px;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
-            flex-direction: column; /* 세로 배치로 변경 */
+            flex-direction: column;
             gap: 15px;
             align-items: center;
             justify-content: center;
             margin-bottom: 30px;
             width: 100%;
             max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .input-area {
@@ -125,19 +102,28 @@
             background-color: #3498db;
             color: white;
         }
-        .btn-random:hover { background-color: #2980b9; }
+
+        .btn-random:hover {
+            background-color: #2980b9;
+        }
 
         .btn-manual {
             background-color: #9b59b6;
             color: white;
         }
-        .btn-manual:hover { background-color: #8e44ad; }
+
+        .btn-manual:hover {
+            background-color: #8e44ad;
+        }
 
         .btn-reset {
             background-color: #95a5a6;
             color: white;
         }
-        .btn-reset:hover { background-color: #7f8c8d; }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
 
         /* 상태바 스타일 */
         .status-bar {
@@ -163,7 +149,7 @@
             gap: 15px;
             width: 100%;
             max-width: 1000px;
-            margin-bottom: 50px;
+            margin: 0 auto 50px auto;
         }
 
         /* 학생 카드 스타일 */
@@ -174,7 +160,7 @@
             padding: 20px 5px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             user-select: none;
             position: relative;
@@ -183,7 +169,7 @@
 
         .student-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .student-number {
@@ -196,10 +182,10 @@
         .student-name {
             font-size: 1.2rem;
             font-weight: bold;
-            outline: none; /* 포커스 테두리 제거 */
+            outline: none;
             border-bottom: 1px dashed transparent;
         }
-        
+
         .student-name:focus {
             border-bottom: 1px dashed #aaa;
             background: #f9f9f9;
@@ -225,52 +211,81 @@
             font-size: 1rem;
         }
 
-        /* 반응형 처리 */
         @media (max-width: 600px) {
             .button-group {
                 flex-direction: column;
                 align-items: stretch;
             }
+
             .grid-container {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <h1>🏫 학급 활동 체크리스트</h1>
-        <p>학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-shapes"></i>
+                우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center my-10">
+        <h1 class="text-5xl font-bold text-gray-800 mb-2">
+            <span class="pen-underline">학급 활동 체크리스트</span>
+        </h1>
+        <p class="text-xl text-gray-500">학생 이름을 클릭하여 완료 여부를 체크하세요. (이름 더블클릭 시 수정 가능)</p>
     </header>
 
-    <div class="controls">
-        <div class="input-area">
-            <textarea id="nameInput" placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
-            <div class="helper-text">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
-        </div>
-
-        <div class="button-group">
-            <button class="btn-manual" onclick="generateFromList()">입력 명단 생성</button>
-            
-            <div style="flex-grow: 1;"></div> <!-- 간격 벌리기용 -->
-            
-            <div class="input-group">
-                <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수">
-                <button class="btn-random" onclick="generateRandom()">랜덤 생성</button>
+    <main>
+        <div class="controls">
+            <div class="input-area">
+                <textarea id="nameInput"
+                    placeholder="학생 이름을 입력하세요. (예: 김철수, 이영희, 박민수)&#13;&#10;줄바꿈(엔터)이나 쉼표(,)로 구분됩니다."></textarea>
+                <div class="helper-text">💡 이름을 붙여넣고 '입력 명단 생성'을 누르세요.</div>
             </div>
-            
-            <button class="btn-reset" onclick="resetChecks()">체크 초기화</button>
-        </div>
-        
-        <div class="status-bar">
-            완료: <span id="completedCount">0</span> / <span id="totalCount">0</span>
-        </div>
-    </div>
 
-    <div id="studentGrid" class="grid-container">
-        <!-- 자바스크립트로 카드가 여기에 생성됩니다 -->
-    </div>
+            <div class="button-group">
+                <button class="btn-manual" onclick="generateFromList()">입력 명단 생성</button>
+
+                <div style="flex-grow: 1;"></div>
+
+                <div class="input-group">
+                    <input type="number" id="randomCount" value="25" min="1" max="100" placeholder="수">
+                    <button class="btn-random" onclick="generateRandom()">랜덤 생성</button>
+                </div>
+
+                <button class="btn-reset" onclick="resetChecks()">체크 초기화</button>
+            </div>
+
+            <div class="status-bar">
+                완료: <span id="completedCount">0</span> / <span id="totalCount">0</span>
+            </div>
+        </div>
+
+        <div id="studentGrid" class="grid-container">
+            <!-- 자바스크립트로 카드가 여기에 생성됩니다 -->
+        </div>
+    </main>
 
     <script>
         // 랜덤 이름 생성을 위한 데이터
@@ -290,7 +305,7 @@
         }
 
         // 초기 실행: 랜덤 25명 생성
-        window.onload = function() {
+        window.onload = function () {
             generateRandom();
         };
 
@@ -298,7 +313,7 @@
         function generateRandom() {
             const countInput = document.getElementById('randomCount');
             let count = parseInt(countInput.value);
-            
+
             if (count < 1) count = 1;
             if (count > 200) {
                 alert("최대 200명까지만 가능합니다.");
@@ -307,20 +322,20 @@
             }
 
             const names = [];
-            for(let i=0; i<count; i++) {
+            for (let i = 0; i < count; i++) {
                 names.push(generateRandomName());
             }
-            
+
             // 입력창도 업데이트 (선택사항)
             document.getElementById('nameInput').value = names.join(', ');
-            
+
             createCards(names);
         }
 
         // 2. 입력 명단 생성 함수
         function generateFromList() {
             const input = document.getElementById('nameInput').value;
-            
+
             if (!input.trim()) {
                 alert("이름을 입력해주세요!");
                 return;
@@ -351,26 +366,26 @@
             nameList.forEach((name, index) => {
                 const card = document.createElement('div');
                 card.className = 'student-card';
-                
+
                 // 클릭 이벤트 (체크)
-                card.onclick = function(e) { 
+                card.onclick = function (e) {
                     // contenteditable 요소 클릭 시 체크 방지
                     if (e.target.isContentEditable) return;
-                    toggleCheck(this); 
+                    toggleCheck(this);
                 };
-                
+
                 const numberSpan = document.createElement('span');
                 numberSpan.className = 'student-number';
                 numberSpan.textContent = (index + 1) + '번';
-                
+
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'student-name';
                 nameDiv.textContent = name;
                 // 이름 수정 가능하도록 설정
                 nameDiv.contentEditable = true;
-                
+
                 // 엔터키 입력시 줄바꿈 방지하고 포커스 해제
-                nameDiv.onkeydown = function(e) {
+                nameDiv.onkeydown = function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         this.blur();
@@ -406,4 +421,5 @@
         }
     </script>
 </body>
+
 </html>
