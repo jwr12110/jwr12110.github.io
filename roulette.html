@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제외되는 돌림판 게임</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
-        
+
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Gamja Flower', cursive;
+            background-color: #fdfbf7;
+            padding-top: 100px;
+            /* Space for nav */
         }
 
         /* 캔버스 래퍼 및 포인터 스타일 */
@@ -34,13 +43,14 @@
             top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 0; 
-            height: 0; 
+            width: 0;
+            height: 0;
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
-            border-top: 30px solid #ef4444; /* red-500 */
+            border-top: 30px solid #ef4444;
+            /* red-500 */
             z-index: 10;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
         }
 
         /* 모달 스타일 */
@@ -52,13 +62,15 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             align-items: center;
             justify-content: center;
         }
+
         .modal.show {
             display: flex;
         }
+
         .modal-content {
             background-color: white;
             padding: 2rem;
@@ -68,28 +80,63 @@
             max-width: 90%;
             width: 300px;
         }
+
         @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        button {
+            font-family: 'Gamja Flower', cursive;
         }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link active">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <!-- 메인 컨테이너 -->
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row">
-        
+    <div
+        class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row border-2 border-gray-200">
+
         <!-- 왼쪽: 설정 패널 -->
         <div class="w-full md:w-1/3 p-6 bg-slate-50 border-r border-slate-200 overflow-y-auto max-h-[80vh]">
-            <h1 class="text-2xl font-bold text-slate-800 mb-6">⚙️ 돌림판 설정</h1>
-            
+            <h1 class="text-3xl font-bold text-slate-800 mb-6">⚙️ 돌림판 설정</h1>
+
             <div class="mb-4">
-                <label class="block text-sm font-medium text-slate-700 mb-2">선택지 개수</label>
+                <label class="block text-xl font-medium text-slate-700 mb-2">선택지 개수</label>
                 <div class="flex gap-2">
-                    <input type="number" id="itemCount" min="2" max="20" value="4" 
-                           class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="generateInputs()" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <input type="number" id="itemCount" min="2" max="20" value="4"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg">
+                    <button onclick="generateInputs()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-lg">
                         설정
                     </button>
                 </div>
@@ -99,12 +146,12 @@
                 <!-- 동적으로 input이 생성되는 공간 -->
             </div>
 
-            <button onclick="initWheel()" 
-                    class="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition shadow-md">
+            <button onclick="initWheel()"
+                class="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition shadow-md text-xl">
                 돌림판에 적용하기
             </button>
-            
-            <p class="text-xs text-slate-500 mt-4 text-center">
+
+            <p class="text-sm text-slate-500 mt-4 text-center">
                 * '돌리기' 버튼을 누르면 당첨된 항목은 목록에서 사라집니다.
             </p>
         </div>
@@ -117,7 +164,7 @@
             </div>
 
             <button id="spinBtn" onclick="spinWheel()" disabled
-                    class="px-10 py-4 bg-indigo-600 text-white text-xl font-bold rounded-full shadow-lg 
+                class="px-10 py-4 bg-indigo-600 text-white text-2xl font-bold rounded-full shadow-lg 
                            hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition transform hover:scale-105 active:scale-95">
                 돌리기!
             </button>
@@ -127,10 +174,10 @@
     <!-- 결과 모달 -->
     <div id="resultModal" class="modal">
         <div class="modal-content shadow-2xl">
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">🎉 당첨! 🎉</h2>
-            <p id="winnerName" class="text-3xl font-extrabold text-indigo-600 mb-6 word-break">결과</p>
-            <button onclick="closeModalAndRemove()" 
-                    class="w-full py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">🎉 당첨! 🎉</h2>
+            <p id="winnerName" class="text-4xl font-extrabold text-indigo-600 mb-6 word-break">결과</p>
+            <button onclick="closeModalAndRemove()"
+                class="w-full py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition text-xl">
                 확인 (목록에서 제외)
             </button>
         </div>
@@ -139,9 +186,9 @@
     <!-- 전부 다 뽑았을 때 모달 -->
     <div id="endModal" class="modal">
         <div class="modal-content shadow-2xl">
-            <h2 class="text-xl font-bold text-slate-800 mb-4">모든 항목을 뽑았습니다!</h2>
-            <button onclick="resetGame()" 
-                    class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">모든 항목을 뽑았습니다!</h2>
+            <button onclick="resetGame()"
+                class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xl">
                 처음부터 다시하기
             </button>
         </div>
@@ -184,8 +231,8 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center';
                 div.innerHTML = `
-                    <span class="w-6 text-slate-400 font-bold mr-2">${i + 1}.</span>
-                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-sm" 
+                    <span class="w-6 text-slate-400 font-bold mr-2 text-lg">${i + 1}.</span>
+                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-lg" 
                            value="항목 ${i + 1}" placeholder="내용 입력">
                 `;
                 container.appendChild(div);
@@ -221,7 +268,7 @@
             // 1. 섹션 그리기
             for (let i = 0; i < numItems; i++) {
                 const angle = i * arcSize;
-                
+
                 ctx.beginPath();
                 ctx.fillStyle = colors[i % colors.length];
                 ctx.moveTo(centerX, centerY);
@@ -236,7 +283,7 @@
                 ctx.rotate(angle + arcSize / 2);
                 ctx.textAlign = "right";
                 ctx.fillStyle = "#fff";
-                ctx.font = "bold 20px 'Noto Sans KR'";
+                ctx.font = "bold 20px 'Gamja Flower'";
                 ctx.shadowColor = "rgba(0,0,0,0.5)";
                 ctx.shadowBlur = 4;
                 ctx.fillText(items[i], radius - 20, 10);
@@ -269,18 +316,18 @@
         function showResult() {
             // 현재 실제 각도 (360도로 나눈 나머지)
             const actualDeg = currentRotation % 360;
-            
+
             // Canvas 0도 = 3시 방향. CSS rotate는 시계방향.
             // 포인터는 12시(-90도 or 270도)에 위치.
             // 따라서 270도에서 회전각을 뺀 위치가 포인터가 가리키는 휠의 각도임.
             // 계산을 쉽게 하기 위해: (360 - actualDeg + 270) % 360 = 포인터가 가리키는 내부 각도
-            
+
             // 더 간단한 논리:
             // 휠이 시계방향으로 X도 돌았다면, 12시 방향에 있는 아이템은 반시계방향으로 X도 만큼 인덱스가 밀린 것과 같음.
             // 시작점(0, 인덱스0)은 3시 방향. 12시 방향은 270도(3/2 pi).
             // 섹터 하나당 각도
             const sliceDeg = 360 / items.length;
-            
+
             // 270도(12시) 위치의 값을 찾기 위해 보정
             // 현재 0번 인덱스의 위치 = actualDeg
             // 12시 위치(270도)에 있는 각도를 구함
@@ -288,13 +335,13 @@
             if (targetAngle < 0) targetAngle += 360;
 
             const winningIndex = Math.floor(targetAngle / sliceDeg);
-            
+
             const winner = items[winningIndex];
-            
+
             // 결과 표시
             winnerText.innerText = winner;
             modal.classList.add('show');
-            
+
             // 삭제를 위해 전역 변수에 저장해둠 (사실 items에서 바로 빼도 되지만 모달 닫을 때 빼는 게 UX상 좋음)
             window.lastWinnerIndex = winningIndex;
         }
@@ -309,10 +356,10 @@
                 // UI에서 해당 값 찾아서 제거하지 않고, 그냥 내부 배열에서 제거 후 다시 그림
                 // 단, 사용자가 텍스트를 수정했을 수도 있으므로 값 기준으로 제거
                 const winnerValue = items[window.lastWinnerIndex];
-                
+
                 // items 배열에서 제거
                 items.splice(window.lastWinnerIndex, 1);
-                
+
                 // 설정 패널의 input들도 업데이트 (동기화)
                 syncInputsWithItems();
 
@@ -320,7 +367,7 @@
                 canvas.style.transition = 'none';
                 canvas.style.transform = `rotate(0deg)`;
                 currentRotation = 0;
-                
+
                 // 약간의 딜레이 후 transition 복구 (다음 스핀을 위해)
                 setTimeout(() => {
                     canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
@@ -348,8 +395,8 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center';
                 div.innerHTML = `
-                    <span class="w-6 text-slate-400 font-bold mr-2">${i + 1}.</span>
-                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-sm" 
+                    <span class="w-6 text-slate-400 font-bold mr-2 text-lg">${i + 1}.</span>
+                    <input type="text" class="item-input flex-1 px-3 py-1.5 border border-slate-200 rounded text-lg" 
                            value="${item}" placeholder="내용 입력">
                 `;
                 container.appendChild(div);
@@ -363,6 +410,12 @@
             generateInputs();
             initWheel();
         }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
     </script>
 </body>
+
 </html>

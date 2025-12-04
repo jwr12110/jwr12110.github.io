@@ -1,42 +1,94 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스포츠 경기 점수판</title>
-    <!-- Tailwind CSS (스타일링을 위해 CDN 사용) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Noto+Sans+KR:wght@400;700&display=swap');
 
+        /* Page specific overrides */
         body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #1a1a1a; /* 어두운 배경 */
+            background-color: #1a1a1a;
+            /* Keep dark theme for scoreboard */
+            background-image: none;
             color: white;
         }
 
         .digital-font {
-            font-family: 'Black Ops One', cursive; /* 점수판용 디지털 폰트 */
+            font-family: 'Black Ops One', cursive;
         }
 
-        /* 버튼 눌림 효과 */
         .btn-active:active {
             transform: scale(0.95);
         }
-        
-        /* 모바일 반응형 조정 */
+
         @media (max-width: 640px) {
             .score-container {
                 flex-direction: column;
                 gap: 2rem;
             }
         }
+
+        /* Adjust nav for dark theme */
+        .main-nav {
+            background: rgba(26, 26, 26, 0.9);
+            border-bottom: 1px solid #333;
+        }
+
+        .nav-logo,
+        .nav-link,
+        .mobile-menu-btn {
+            color: #e5e7eb;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                background: #1a1a1a;
+                border-bottom: 1px solid #333;
+            }
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col items-center py-10">
 
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fa-solid fa-pencil"></i> 우리 수업 도구
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="timer.html" class="nav-link">타이머</a></li>
+                <li><a href="seatingarrangement.html" class="nav-link">자리배치</a></li>
+                <li><a href="roulette.html" class="nav-link">돌림판</a></li>
+                <li><a href="dB.html" class="nav-link">소음측정기</a></li>
+                <li><a href="checklist.html" class="nav-link">체크리스트</a></li>
+                <li><a href="score.html" class="nav-link active">점수판</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- 헤더 -->
-    <header class="mb-8 text-center">
+    <header class="mb-8 text-center mt-16">
         <h1 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">SPORTS SCOREBOARD</h1>
         <div class="bg-gray-800 px-4 py-2 rounded-full inline-block">
             <span class="text-gray-400 mr-2">현재 라운드:</span>
@@ -46,10 +98,11 @@
 
     <!-- 메인 점수판 영역 -->
     <main class="w-full max-w-4xl px-4">
-        
+
         <!-- 팀 점수 컨테이너 -->
-        <div class="score-container flex justify-between items-center bg-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl border border-gray-700 relative">
-            
+        <div
+            class="score-container flex justify-between items-center bg-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl border border-gray-700 relative">
+
             <!-- VS 배지 (중앙) -->
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block">
                 <span class="bg-yellow-500 text-black font-black px-3 py-1 rounded text-xl italic">VS</span>
@@ -57,15 +110,20 @@
 
             <!-- Team A (블루) -->
             <div class="flex flex-col items-center w-full md:w-5/12">
-                <input type="text" value="HOME TEAM" class="bg-transparent text-center text-blue-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-blue-400 transition-colors w-full" aria-label="Team A Name">
-                
-                <div class="bg-black rounded-xl p-6 w-full text-center border-4 border-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+                <input type="text" value="HOME TEAM"
+                    class="bg-transparent text-center text-blue-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-blue-400 transition-colors w-full"
+                    aria-label="Team A Name">
+
+                <div
+                    class="bg-black rounded-xl p-6 w-full text-center border-4 border-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
                     <span id="score-a" class="digital-font text-8xl md:text-9xl text-white block leading-none">0</span>
                 </div>
 
                 <div class="flex gap-4 mt-6 w-full justify-center">
-                    <button onclick="updateScore('A', -1)" class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
-                    <button onclick="updateScore('A', 1)" class="btn-active w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
+                    <button onclick="updateScore('A', -1)"
+                        class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
+                    <button onclick="updateScore('A', 1)"
+                        class="btn-active w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
                 </div>
             </div>
 
@@ -74,27 +132,42 @@
 
             <!-- Team B (레드) -->
             <div class="flex flex-col items-center w-full md:w-5/12">
-                <input type="text" value="AWAY TEAM" class="bg-transparent text-center text-red-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-red-400 transition-colors w-full" aria-label="Team B Name">
-                
-                <div class="bg-black rounded-xl p-6 w-full text-center border-4 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+                <input type="text" value="AWAY TEAM"
+                    class="bg-transparent text-center text-red-400 font-bold text-xl md:text-2xl mb-4 focus:outline-none border-b border-transparent focus:border-red-400 transition-colors w-full"
+                    aria-label="Team B Name">
+
+                <div
+                    class="bg-black rounded-xl p-6 w-full text-center border-4 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
                     <span id="score-b" class="digital-font text-8xl md:text-9xl text-white block leading-none">0</span>
                 </div>
 
                 <div class="flex gap-4 mt-6 w-full justify-center">
-                    <button onclick="updateScore('B', -1)" class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
-                    <button onclick="updateScore('B', 1)" class="btn-active w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
+                    <button onclick="updateScore('B', -1)"
+                        class="btn-active w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">-</button>
+                    <button onclick="updateScore('B', 1)"
+                        class="btn-active w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white text-3xl font-bold flex items-center justify-center transition shadow-lg">+</button>
                 </div>
             </div>
         </div>
 
         <!-- 컨트롤 버튼 -->
         <div class="flex justify-center gap-4 mt-8">
-            <button onclick="saveRound()" class="btn-active px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+            <button onclick="saveRound()"
+                class="btn-active px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
                 라운드 저장 및 초기화
             </button>
-            <button onclick="resetAll()" class="btn-active px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            <button onclick="resetAll()"
+                class="btn-active px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg text-white font-bold text-lg shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
                 전체 초기화
             </button>
         </div>
@@ -134,13 +207,13 @@
         let scoreA = 0;
         let scoreB = 0;
         let currentRound = 1;
-        
+
         // DOM 요소 가져오기
         const elScoreA = document.getElementById('score-a');
         const elScoreB = document.getElementById('score-b');
         const elRound = document.getElementById('current-round-display');
         const elHistoryBody = document.getElementById('history-body');
-        
+
         // 점수 변경 함수
         function updateScore(team, amount) {
             if (team === 'A') {
@@ -177,7 +250,7 @@
             // 승자 판별
             let winner = '-';
             let winnerClass = 'text-gray-400';
-            
+
             if (scoreA > scoreB) {
                 winner = 'HOME';
                 winnerClass = 'text-blue-400 font-bold';
@@ -207,7 +280,7 @@
             currentRound++;
             scoreA = 0;
             scoreB = 0;
-            
+
             // 화면 갱신
             elScoreA.textContent = 0;
             elScoreB.textContent = 0;
@@ -235,6 +308,12 @@
                 </tr>
             `;
         }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
     </script>
 </body>
+
 </html>
